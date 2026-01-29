@@ -2,3 +2,4 @@
 team 11 group project for CSC 340 of 2026
 -Rayyan Othman
 -Gopal Vulli
+-Gamal Hassan
