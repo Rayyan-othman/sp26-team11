@@ -16,7 +16,18 @@ Our project is a system/service that allows the customer to book mobie on site g
 
 ## App Functions
 
-1.  SysAdmin Rayyan othman (the user with the admin role ):
+
+
+
+
+2. Provider Gopal Vulli (the user with the provider role):
+    1. Create/modify/remove provider profile – Providers can register an account, add qualifications and credentials, update availability, or remove their profile.
+    2. Create services – Providers can post mechanic, repair, or detailing services with pricing and service descriptions.
+    3. View customer statistics – Providers can view booking history, ratings, and other service metrics.
+    4. Reply to reviews – Providers can respond to customer reviews to address feedback.
+
+
+3.  SysAdmin Rayyan othman (the user with the admin role ):
     1. Manage user access - will allow the system admin user to log in and make changes and veiw the app as an administrator .
     2. Moderate services - can remove add change or adjust the app ,services or users if needed.
     3. Moderate reviews - allows for removing commenting and moderation of all reveiw left by customers and providers.
