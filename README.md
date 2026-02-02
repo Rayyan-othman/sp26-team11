@@ -16,7 +16,11 @@ Our project is a system/service that allows the customer to book mobie on site g
 
 ## App Functions
 
-
+1. Customer Gamal Hassan (the user with the customer role):
+    1. Create/modify customer profile – Customers can register an account, log in securely, and update their personal information such as contact details and service preferences.
+    2. View available services – Customers can browse a list of providers and available services, including pricing, descriptions, and ratings.
+    3. Subscribe to available services – Customers can book services directly in the app by selecting a provider, choosing a time slot, and confirming the request.
+    4. Write reviews for subscribed services – After a completed service, customers can leave ratings and written reviews to share feedback.
 
 
 
