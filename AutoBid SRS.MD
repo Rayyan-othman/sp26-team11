@@ -38,14 +38,78 @@ Write each story as: **As a `<role>`, I want `<capability>`, so that `<benefit>`
 
 ### 2.1 Customer Stories
 - **US‑CUST‑001 — <short title>**  
-  _Story:_ As a customer, I want … so that …  
-  _Acceptance:_
-  ```gherkin
-  Scenario: <happy path>
-    Given <preconditions>
-    When  <action>
-    Then  <observable outcome>
-  ```
+  Story:
+As a customer, I want to create an account so that I can access booking features.
+
+Acceptance:
+
+Scenario: Successful registration
+Given the customer is on the registration page
+When they enter valid name, email, and password
+Then the system creates the account
+And logs the customer in automatically
+
+Scenario: Invalid registration
+Given the customer is on the registration page
+When they submit incomplete or invalid information
+Then the system displays an error message
+And the account is not created
+
+US-CUST-002 — Customer Login
+
+Story:
+As a customer, I want to log into my account so that I can manage bookings.
+
+Acceptance:
+
+Scenario: Successful login
+Given the customer has a registered account
+When they enter correct credentials
+Then they are logged into the dashboard
+
+Scenario: Failed login
+Given the customer enters incorrect credentials
+When they attempt to log in
+Then the system shows an error message
+And denies access
+
+US-CUST-003 — Browse Services
+
+Story:
+As a customer, I want to browse available services so that I can choose a provider.
+
+Acceptance:
+
+Scenario: View services
+Given the customer is logged in
+When they open the services page
+Then a list of providers and services is displayed
+And each service shows description and availability
+
+US-CUST-004 — Book Appointment
+
+Story:
+As a customer, I want to book an appointment so that I can schedule service at my location.
+
+Acceptance:
+
+Scenario: Successful booking
+Given the customer selects a provider
+When they choose a time and confirm
+Then the appointment is saved
+And the provider receives a notification
+
+US-CUST-005 — View Booking History
+
+Story:
+As a customer, I want to view my booking history so that I can track past and upcoming services.
+
+Acceptance:
+
+Scenario: View bookings
+Given the customer is logged in
+When they open their dashboard
+Then all past and upcoming bookings are displayed
 
 - **US‑CUST‑002 — <short title>**  
   _Story:_ As a customer, I want … so that …  
