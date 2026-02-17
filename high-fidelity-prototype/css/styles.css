@@ -93,3 +93,75 @@ body {
 .form-control::placeholder {
   color: rgba(255,255,255,.55);
 }
+/* =========================================
+   Support teammate simple pages (.container/.card/.nav)
+   So pages look consistent without rewriting
+========================================= */
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.card {
+  background: rgba(0,0,0,.45);
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 16px;
+  padding: 24px;
+  backdrop-filter: blur(10px);
+}
+
+header .nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
+  border-bottom: 1px solid rgba(255,255,255,.12);
+  background: rgba(0,0,0,.35);
+}
+
+header .brand {
+  font-weight: 800;
+  color: #fff;
+  text-decoration: none;
+}
+
+header a {
+  color: rgba(255,255,255,.85);
+  text-decoration: none;
+}
+
+header a:hover {
+  color: #fff;
+  text-decoration: underline;
+  text-decoration-color: rgba(225,29,72,.65);
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 10pt;
+  border: 1px solid rgba(225,29,72,.40);
+  background: rgba(225,29,72,.18);
+  color: #fff;
+}
+/* ===== Fix role dropdown visibility (dark theme) ===== */
+.form-select {
+  background-color: rgba(255,255,255,.06);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.14);
+}
+
+/* options list when dropdown opens */
+.form-select option {
+  background-color: #0f121c; /* dark */
+  color: #fff;              /* white text */
+}
+
+/* (optional) improve select focus */
+.form-select:focus {
+  border-color: rgba(225, 29, 72, .55);
+  box-shadow: 0 0 0 .25rem rgba(225, 29, 72, .18);
+}
