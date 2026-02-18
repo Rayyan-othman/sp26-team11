@@ -1,7 +1,7 @@
 ## 1. Overview
 
 - **Vision:**
-AutoBid is a web application that connects customers with mobile on-site mechanics and detailing providers. Customers can book services at their location, leave reviews, and manage their profiles. Providers can create service listings, manage availability, and respond to reviews. Administrators oversee system moderation and user access.
+AutoBid is a web app that connects customers with mobile on-site mechanics and detailing providers. Customers can book services at their location, leave reviews, and manage their profiles. Providers can create service listings, manage availability, and respond to reviews. Administrators oversee system moderation and user access.
 
 
 
