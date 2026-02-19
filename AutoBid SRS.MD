@@ -135,7 +135,7 @@ Then all past and upcoming bookings are displayed
       And it becomes visible to customers
   ```
 
-- **US-PROV-002 — Create service listing**  
+- **US-PROV-002 — Create service listings**  
 *Story:* As a provider, I want to create mechanic or detailing services with pricing and descriptions so that customers can book my services.
 
   *Acceptance:*
