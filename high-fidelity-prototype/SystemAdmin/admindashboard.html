@@ -1,25 +1,307 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Admin Dashboard</title>
-  <link rel="stylesheet" href="../css/styles.css"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AutoBid | System Admin Dashboard</title>
+
+  <!-- Shared styles (if you already have it) -->
+  <link rel="stylesheet" href="../css/styles.css" />
+  <!-- Admin specific styles -->
+  <link rel="stylesheet" href="../css/admindashboard.css" />
 </head>
+
 <body>
-<header>
-  <div class="nav">
-    <a class="brand" href="../index.html">AutoBid</a>
-    <span class="badge">Admin</span>
-    <span style="flex:1"></span>
-    <a href="../auth/login.html">Logout</a>
+  <div class="app">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">AB</div>
+        <div class="brand-text">
+          <h1>AutoBid</h1>
+          <p>System Admin</p>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <a class="nav-item active" href="./admindashboard.html">Dashboard</a>
+        <a class="nav-item" href="#users">Users</a>
+        <a class="nav-item" href="#providers">Providers</a>
+        <a class="nav-item" href="#bookings">Bookings</a>
+        <a class="nav-item" href="#services">Services</a>
+        <a class="nav-item" href="#reports">Reports</a>
+        <a class="nav-item" href="#settings">Settings</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="admin-card">
+          <div class="avatar">A</div>
+          <div class="admin-meta">
+            <div class="admin-name">Admin</div>
+            <div class="admin-email">admin@autobid.com</div>
+          </div>
+        </div>
+
+        <a class="logout" href="../index.html">Log out</a>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      <!-- TOP BAR -->
+      <header class="topbar">
+        <div>
+          <h2>Dashboard</h2>
+          <p class="muted">Manage users, providers, and bookings at a glance.</p>
+        </div>
+
+        <div class="topbar-actions">
+          <div class="search">
+            <input type="search" placeholder="Search users, bookings, providers..." />
+          </div>
+          <button class="btn btn-secondary" type="button">Export</button>
+          <button class="btn btn-primary" type="button">New Announcement</button>
+        </div>
+      </header>
+
+      <!-- STATS -->
+      <section class="stats">
+        <article class="stat-card">
+          <div class="stat-title">Total Users</div>
+          <div class="stat-value">1,248</div>
+          <div class="stat-sub muted">+38 this week</div>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-title">Active Providers</div>
+          <div class="stat-value">94</div>
+          <div class="stat-sub muted">12 pending verification</div>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-title">Bookings (30d)</div>
+          <div class="stat-value">312</div>
+          <div class="stat-sub muted">78 scheduled</div>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-title">Support Tickets</div>
+          <div class="stat-value">16</div>
+          <div class="stat-sub muted">4 urgent</div>
+        </article>
+      </section>
+
+      <!-- GRID -->
+      <section class="grid">
+        <!-- LEFT: Pending Approvals -->
+        <div class="panel" id="providers">
+          <div class="panel-header">
+            <h3>Pending Provider Approvals</h3>
+            <a class="link" href="#providers">View all</a>
+          </div>
+
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Provider</th>
+                  <th>Service</th>
+                  <th>City</th>
+                  <th>Status</th>
+                  <th class="right">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="cell-main">
+                      <div class="pill-avatar">J</div>
+                      <div>
+                        <div class="cell-title">Jordan Mobile Repairs</div>
+                        <div class="cell-sub">provider01@demo.com</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>On-site Mechanic</td>
+                  <td>Greensboro</td>
+                  <td><span class="badge warn">Pending</span></td>
+                  <td class="right">
+                    <button class="btn-sm btn-ok" type="button">Approve</button>
+                    <button class="btn-sm btn-bad" type="button">Reject</button>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="cell-main">
+                      <div class="pill-avatar">M</div>
+                      <div>
+                        <div class="cell-title">Mina Detailing Co.</div>
+                        <div class="cell-sub">provider02@demo.com</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>Mobile Detailing</td>
+                  <td>Raleigh</td>
+                  <td><span class="badge warn">Pending</span></td>
+                  <td class="right">
+                    <button class="btn-sm btn-ok" type="button">Approve</button>
+                    <button class="btn-sm btn-bad" type="button">Reject</button>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <div class="cell-main">
+                      <div class="pill-avatar">S</div>
+                      <div>
+                        <div class="cell-title">SpeedFix Auto</div>
+                        <div class="cell-sub">provider03@demo.com</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>On-site Mechanic</td>
+                  <td>Charlotte</td>
+                  <td><span class="badge warn">Pending</span></td>
+                  <td class="right">
+                    <button class="btn-sm btn-ok" type="button">Approve</button>
+                    <button class="btn-sm btn-bad" type="button">Reject</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="panel-footer muted">
+            Tip: Approving a provider enables them to appear in Customer browse results.
+          </div>
+        </div>
+
+        <!-- RIGHT: Quick Actions + System Health -->
+        <div class="stack">
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Quick Actions</h3>
+            </div>
+            <div class="actions">
+              <button class="action-card" type="button">
+                <div class="action-title">Create Admin User</div>
+                <div class="action-sub muted">Add staff & assign roles</div>
+              </button>
+              <button class="action-card" type="button">
+                <div class="action-title">Suspend Account</div>
+                <div class="action-sub muted">For fraud/chargebacks</div>
+              </button>
+              <button class="action-card" type="button">
+                <div class="action-title">Post Announcement</div>
+                <div class="action-sub muted">Message all users</div>
+              </button>
+              <button class="action-card" type="button">
+                <div class="action-title">View Audit Log</div>
+                <div class="action-sub muted">Track admin actions</div>
+              </button>
+            </div>
+          </div>
+
+          <div class="panel" id="reports">
+            <div class="panel-header">
+              <h3>System Health</h3>
+              <a class="link" href="#reports">Details</a>
+            </div>
+
+            <div class="health">
+              <div class="health-row">
+                <div class="health-label">API Status</div>
+                <div class="health-value"><span class="dot ok"></span> Operational</div>
+              </div>
+              <div class="health-row">
+                <div class="health-label">Database</div>
+                <div class="health-value"><span class="dot ok"></span> Healthy</div>
+              </div>
+              <div class="health-row">
+                <div class="health-label">Payments</div>
+                <div class="health-value"><span class="dot warn"></span> Degraded</div>
+              </div>
+              <div class="health-row">
+                <div class="health-label">Last Backup</div>
+                <div class="health-value">Today, 02:10 AM</div>
+              </div>
+            </div>
+
+            <div class="panel-footer muted">
+              Note: “Degraded” means slower response time; transactions still succeed.
+            </div>
+          </div>
+        </div>
+
+        <!-- FULL WIDTH: Recent Bookings -->
+        <div class="panel wide" id="bookings">
+          <div class="panel-header">
+            <h3>Recent Bookings</h3>
+            <a class="link" href="#bookings">View all</a>
+          </div>
+
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Customer</th>
+                  <th>Provider</th>
+                  <th>Service</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                  <th class="right">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>#BK-10421</td>
+                  <td>Rayyan O.</td>
+                  <td>Mina Detailing Co.</td>
+                  <td>Detailing - Full</td>
+                  <td>Feb 18, 2026</td>
+                  <td><span class="badge ok">Scheduled</span></td>
+                  <td class="right">
+                    <button class="btn-sm" type="button">Open</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>#BK-10402</td>
+                  <td>Nick A.</td>
+                  <td>SpeedFix Auto</td>
+                  <td>Brake Inspection</td>
+                  <td>Feb 16, 2026</td>
+                  <td><span class="badge info">In Progress</span></td>
+                  <td class="right">
+                    <button class="btn-sm" type="button">Open</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>#BK-10388</td>
+                  <td>Omar H.</td>
+                  <td>Jordan Mobile Repairs</td>
+                  <td>Battery Replace</td>
+                  <td>Feb 14, 2026</td>
+                  <td><span class="badge gray">Completed</span></td>
+                  <td class="right">
+                    <button class="btn-sm" type="button">Open</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="panel-footer muted">
+            Admin actions are logged in the Audit Log for accountability.
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer muted">
+        © 2026 AutoBid • System Admin Panel
+      </footer>
+    </main>
   </div>
-</header>
-<div class="container">
-  <div class="card">
-    <h1>Admin Dashboard (Stub)</h1>
-    <p class="small">Teammates will add Manage Users → Manage Reviews → Manage Services pages.</p>
-  </div>
-</div>
 </body>
 </html>

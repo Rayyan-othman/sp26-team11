@@ -120,26 +120,66 @@ Then all past and upcoming bookings are displayed
     When  <action>
     Then  <observable outcome>
   ```
+  
+## 2.2 Provider Stories
 
-### 2.2 Provider Stories
-- **US‑PROV‑001 — <short title>**  
-  _Story:_ As a provider, I want … so that …  
-  _Acceptance:_
+- **US-PROV-001 — Create and Manage Provider Profile**  
+  *Story:* As a service provider, I want to create and update my profile with my qualifications and certifications so that customers can verify my credibility and expertise.
+
+  *Acceptance Criteria:*
   ```gherkin
-  Scenario: <happy path>
-    Given <preconditions>
-    When  <action>
-    Then  <observable outcome>
+  Scenario: Create provider profile
+      Given I am registered as a provider
+      When I enter my qualifications and save the profile
+      Then my provider profile is successfully saved
+      And it is visible to customers
   ```
 
-- **US‑PROV‑002 — <short title>**  
-  _Story:_ As a provider, I want … so that …  
-  _Acceptance:_
+- **US-PROV-002 — Create Service Listings**  
+  *Story:* As a service provider, I want to add mechanic or detailing services with pricing and detailed descriptions so that customers can review and book my offerings.
+
+  *Acceptance Criteria:*
   ```gherkin
-  Scenario: <happy path>
-    Given <preconditions>
-    When  <action>
-    Then  <observable outcome>
+  Scenario: Publish service listing
+      Given my provider profile is active
+      When I enter the required service information and confirm
+      Then the service is created in a "Published" state
+      And it appears in customer search results
+  ```
+
+- **US-PROV-003 — Manage Availability Schedule**  
+  *Story:* As a service provider, I want to update my availability schedule so that customers can only book appointments during my available time slots.
+
+  *Acceptance Criteria:*
+  ```gherkin
+  Scenario: Update availability schedule
+      Given I have an active provider account
+      When I update my available time slots
+      Then customers see the updated availability
+      And unavailable time slots cannot be selected for booking
+  ```
+
+- **US-PROV-004 — View Booking Statistics**  
+  *Story:* As a service provider, I want to view my booking history and customer ratings so that I can monitor my performance and service quality.
+
+  *Acceptance Criteria:*
+  ```gherkin
+  Scenario: View provider statistics
+      Given I am logged in as a provider
+      When I access the statistics dashboard
+      Then I can see my booking history
+      And I can see my average rating
+  ```
+
+- **US-PROV-005 — Respond to Customer Reviews**  
+  *Story:* As a service provider, I want to respond to customer reviews so that I can address feedback and maintain a professional reputation.
+
+  *Acceptance Criteria:*
+  ```gherkin
+  Scenario: Reply to customer review
+      Given a customer has submitted a review on my service
+      When I submit a response
+      Then my reply appears beneath the customer's review
   ```
 
 #### 2.3 SysAdmin Stories
