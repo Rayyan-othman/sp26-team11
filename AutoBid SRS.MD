@@ -123,8 +123,8 @@ Then all past and upcoming bookings are displayed
   
 ## 2.2 Provider Stories
 
-- **US-PROV-001 — Create and Manage Provider Profile**  
-  *Story:* As a service provider, I want to create and update my profile with my qualifications and certifications so that customers can verify my credibility and expertise.
+- **US-PROV-001 — Create provider profile**  
+  *Story:* As a provider, I want to create and update my profile with qualifications and certifications so that customers can trust my services.  
 
   *Acceptance Criteria:*
   ```gherkin
@@ -171,8 +171,8 @@ Then all past and upcoming bookings are displayed
       And I can see my average rating
   ```
 
-- **US-PROV-005 — Respond to Customer Reviews**  
-  *Story:* As a service provider, I want to respond to customer reviews so that I can address feedback and maintain a professional reputation.
+- **US-PROV-005 — Reply to reviews**  
+*Story:* As a provider, I want to respond to customer reviews so that I can address feedback professionally.
 
   *Acceptance Criteria:*
   ```gherkin
