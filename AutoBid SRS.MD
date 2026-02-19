@@ -123,7 +123,7 @@ Then all past and upcoming bookings are displayed
   
 ## 2.2 Provider Stories
 
-- **US-PROV-001 — Create provider profile**  
+- **US-PROV-001 — Create provider profiles**  
   *Story:* As a provider, I want to create and update my profile with qualifications and certifications so that customers can trust my services.  
 
   *Acceptance:*
