@@ -1,0 +1,22 @@
+high-fidelity-prototype/
+  index.html
+
+  css/
+    styles.css
+
+  auth/
+    login.html
+    signup.html
+
+  shared/
+    header-links.txt   
+
+  customer/
+    dashboard.html     
+
+  provider/
+    dashboard.html   
+
+  admin/
+  
+    dashboard.html     

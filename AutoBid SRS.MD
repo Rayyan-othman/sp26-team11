@@ -120,65 +120,69 @@ Then all past and upcoming bookings are displayed
     When  <action>
     Then  <observable outcome>
   ```
-
+  
 ## 2.2 Provider Stories
 
 - **US-PROV-001 — Create provider profile**  
-*Story:* As a provider, I want to create and update my profile with qualifications and certifications so that customers can trust my services.  
+  *Story:* As a provider, I want to create and update my profile with qualifications and certifications so that customers can trust my services.  
 
-*Acceptance:*
-   ``` gherkin
-Scenario: Create provider profile
-    Given I am registered as a provider
-    When I enter my qualifications and save my profile
-    Then my provider profile is saved
-    And it becomes visible to customers
-    ```
-- **US-PROV-002 — Create service listing**  
+  *Acceptance:*
+  ```gherkin
+  Scenario: Create provider profile
+      Given I am registered as a provider
+      When I enter my qualifications and save my profile
+      Then my provider profile is saved
+      And it becomes visible to customers
+  ```
+
+- **US-PROV-002 — Create service listings**  
 *Story:* As a provider, I want to create mechanic or detailing services with pricing and descriptions so that customers can book my services.
 
-*Acceptance:*
-    ``` gherkin
-Scenario: Publish service listing
-    Given my provider profile is active
-    When I enter required service details and confirm
-    Then the service is created in "Published" state
-    And it appears in customer search results
-    ```
+  *Acceptance:*
+  ```gherkin
+  Scenario: Publish service listing
+      Given my provider profile is active
+      When I enter required service details and confirm
+      Then the service is created in "Published" state
+      And it appears in customer search results
+  ```
+
 - **US-PROV-003 — Update availability**  
 *Story:* As a provider, I want to update my availability schedule so that customers can only book during my available times.
 
-*Acceptance:*
-    ``` gherkin
-Scenario: Update availability schedule
-    Given I have an active provider account
-    When I update my available time slots
-    Then customers see the updated availability
-    And unavailable time slots cannot be booked
-    ```
+  *Acceptance:*
+  ```gherkin
+  Scenario: Update availability schedule
+      Given I have an active provider account
+      When I update my available time slots
+      Then customers see the updated availability
+      And unavailable time slots cannot be booked
+  ```
+
 - **US-PROV-004 — View booking statisticsy**  
 *Story:* As a provider, I want to view booking history and ratings so that I can track my performance.
 
-*Acceptance:*
-    ``` gherkin
-Scenario: View provider statistics
-    Given I am logged in as a provider
-    When I open the statistics dashboard
-    Then I see my booking history
-    And I see my average rating
-    ```
+  *Acceptance:*
+  ```gherkin
+  Scenario: View provider statistics
+      Given I am logged in as a provider
+      When I open the statistics dashboard
+      Then I see my booking history
+      And I see my average rating
+  ```
+
 - **US-PROV-005 — Reply to reviews**  
 *Story:* As a provider, I want to respond to customer reviews so that I can address feedback professionally.
 
-*Acceptance:*
-    ``` gherkin
-Scenario: Reply to customer review
-    Given a customer has left a review on my service
-    When I submit a reply
-    Then my response appears below the review
-   ```
+  *Acceptance:*
+  ```gherkin
+  Scenario: Reply to customer review
+      Given a customer has left a review on my service
+      When I submit a reply
+      Then my response appears below the review
+  ```
 
-## 2.3 SysAdmin Stories
+#### 2.3 SysAdmin Stories
 
 - **US-ADMIN-001 — Manage User Accounts**  
   _Story:_ As a sysadmin, I want to create, deactivate, and manage user accounts so that the system remains secure and organized.  
