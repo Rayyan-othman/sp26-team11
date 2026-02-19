@@ -40,15 +40,15 @@ textarea::placeholder {
 
 /* Submit / accent buttons */
 .btn-accent {
-  background-color: #131210;
+  background-color: #cdcac5;
   color: #1a1a1a;
-  border-color: #ffb100;
+  border-color: #e8dfc9;
   font-weight: 600;
 }
 
 .btn-accent:hover,
 .btn-accent:focus {
-  background-color: #ff9a00;
-  border-color: #ff9a00;
+  background-color: #e3ddd4;
+  border-color: #d4cec5;
  color: #1a1a1a;
 }
