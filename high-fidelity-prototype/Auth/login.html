@@ -156,11 +156,17 @@
   // -------------------------------
   // ROUTING (UPDATE if your filenames differ)
   // -------------------------------
-  function routeByRole(role){
-    // These must match your actual dashboard filenames:
-    if(role === "customer") location.href = "../Customer/customerdashboard.html";
-    location.href = "../Provider/dashboard.html";
-    if(role === "admin") location.href = "../SystemAdmin/admindashboard.html";
+    function routeByRole(role){
+  
+    if(role === "customer"){
+      location.href = "../Customer/customerdashboard.html";
+    }
+    else if(role === "provider"){
+      location.href = "../Provider/dashboard.html";
+    }
+    else if(role === "admin"){
+      location.href = "../SystemAdmin/admindashboard.html";
+    }
   }
 </script>
 </body>
