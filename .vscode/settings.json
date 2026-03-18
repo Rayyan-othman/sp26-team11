@@ -1,3 +1,4 @@
 {
-    "livePreview.defaultPreviewPath": "/high-fidelity-prototype/Customer/customerdashboard.html"
+    "livePreview.defaultPreviewPath": "/high-fidelity-prototype/Customer/customerdashboard.html",
+    "java.compile.nullAnalysis.mode": "automatic"
 }
