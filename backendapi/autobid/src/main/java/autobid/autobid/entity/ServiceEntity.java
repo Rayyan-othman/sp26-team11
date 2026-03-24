@@ -1,6 +1,12 @@
 package autobid.autobid.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "services")
@@ -15,6 +21,10 @@ public class ServiceEntity {
     private Double price;
     private String category;
     private String availability;
+
+    @ManyToOne
+    @JoinColumn(name = "provider_id")
+    private Provider provider;
 
     public ServiceEntity() {
     }
@@ -65,5 +75,13 @@ public class ServiceEntity {
 
     public void setAvailability(String availability) {
         this.availability = availability;
+    }
+
+    public Provider getProvider() {
+        return provider;
+    }
+
+    public void setProvider(Provider provider) {
+        this.provider = provider;
     }
 }
