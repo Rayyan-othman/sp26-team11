@@ -43,7 +43,11 @@ Our project is a system/service that allows the customer to book mobie on site g
 - Moderate services -> `GET /services`, `DELETE /services/{id}`
 - Moderate reviews -> `GET /reviews`, `DELETE /reviews/{id}`
 - View usage statistics -> `GET /statistics`
-  ## API Endpoints
+
+ 
+![032419BD-BE75-4F09-B05A-00B62E625A99](https://github.com/user-attachments/assets/14f88ad3-bef3-436c-ab6f-8d9d3120c00a)
+
+   ## API Endpoints
 
 ### User Endpoints
 - `GET /users` -> Get all users
