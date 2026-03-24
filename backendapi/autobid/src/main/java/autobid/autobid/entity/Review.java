@@ -16,8 +16,12 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Integer rating;
     private String comment;
-    private int rating;
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 
     @ManyToOne
     @JoinColumn(name = "service_id")
@@ -26,14 +30,20 @@ public class Review {
     public Review() {
     }
 
-    public Review(String comment, int rating, ServiceEntity service) {
-        this.comment = comment;
-        this.rating = rating;
-        this.service = service;
-    }
-
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
     }
 
     public String getComment() {
@@ -44,12 +54,12 @@ public class Review {
         this.comment = comment;
     }
 
-    public int getRating() {
-        return rating;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setRating(int rating) {
-        this.rating = rating;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public ServiceEntity getService() {
