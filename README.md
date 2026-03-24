@@ -92,6 +92,7 @@ Our project is a system/service that allows the customer to book mobie on site g
 ## Example JSON Requests
 
 ### Create Customer
+
 ```json
 {
   "firstName": "Rayyan",
@@ -102,4 +103,14 @@ Our project is a system/service that allows the customer to book mobie on site g
   "role": "CUSTOMER",
   "accountStatus": "ACTIVE"
 }
-  
+  }
+### Create Customer
+{
+  "firstName": "John",
+  "lastName": "Mechanic",
+  "email": "john@autobid.com",
+  "password": "123456",
+  "phone": "3361112222",
+  "role": "PROVIDER",
+  "accountStatus": "ACTIVE"
+}
