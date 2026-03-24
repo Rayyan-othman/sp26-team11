@@ -103,4 +103,3 @@ Our project is a system/service that allows the customer to book mobie on site g
   "accountStatus": "ACTIVE"
 }
   
-<img width="3024" height="4032" alt="image" src="https://github.com/user-attachments/assets/cecd5fe4-f604-4523-bc59-7704f7de5815" />
