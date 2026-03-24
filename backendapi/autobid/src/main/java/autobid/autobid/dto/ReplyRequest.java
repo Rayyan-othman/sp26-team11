@@ -1,4 +1,4 @@
-package autobid.autobid.entity;
+package autobid.autobid.dto;
 
 public class ReplyRequest {
     private String message;

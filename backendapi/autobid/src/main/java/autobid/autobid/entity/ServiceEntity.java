@@ -1,12 +1,6 @@
 package autobid.autobid.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "services")
@@ -18,28 +12,20 @@ public class ServiceEntity {
 
     private String title;
     private String description;
-    private double price;
-
-    // NEW: Link each service to a Provider
-    @ManyToOne
-    @JoinColumn(name = "provider_id")
-    private User provider;
+    private Double price;
+    private String category;
+    private String availability;
 
     public ServiceEntity() {
-    }
-
-    public ServiceEntity(String title, String description, double price, User provider) {
-        this.title = title;
-        this.description = description;
-        this.price = price;
-        this.provider = provider;
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) { this.id = id; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;
@@ -57,19 +43,27 @@ public class ServiceEntity {
         this.description = description;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
-    public User getProvider() {
-        return provider;
+    public String getCategory() {
+        return category;
     }
 
-    public void setProvider(User provider) {
-        this.provider = provider;
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getAvailability() {
+        return availability;
+    }
+
+    public void setAvailability(String availability) {
+        this.availability = availability;
     }
 }
