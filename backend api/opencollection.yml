@@ -1,7 +1,7 @@
 opencollection: 1.0.0
 
 info:
-  name: Backend api for autobid
+  name: backend api
 bundled: false
 extensions:
   bruno:
