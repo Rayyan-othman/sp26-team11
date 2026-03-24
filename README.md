@@ -91,9 +91,9 @@ Our project is a system/service that allows the customer to book mobie on site g
 
 ## Example JSON Requests
 
-### Create Customer
 
-```json
+### [POST] Create Customer
+Endpoint: /users
 {
   "firstName": "Rayyan",
   "lastName": "Othman",
@@ -103,8 +103,9 @@ Our project is a system/service that allows the customer to book mobie on site g
   "role": "CUSTOMER",
   "accountStatus": "ACTIVE"
 }
-  }
-### Create Customer
+
+### [POST] Create Provider
+Endpoint: /users
 {
   "firstName": "John",
   "lastName": "Mechanic",
@@ -113,4 +114,106 @@ Our project is a system/service that allows the customer to book mobie on site g
   "phone": "3361112222",
   "role": "PROVIDER",
   "accountStatus": "ACTIVE"
+}
+
+### [POST] Create Service
+Endpoint: /services
+{
+  "title": "Mobile Oil Change",
+  "description": "On-site oil change service at your location",
+  "price": 89.99,
+  "category": "Mechanic",
+  "availability": "Available",
+  "provider": {
+    "id": 2
+  }
+}
+
+### [POST] Create Booking
+Endpoint: /bookings
+{
+  "bookingDate": "2026-03-24",
+  "status": "CONFIRMED",
+  "customer": {
+    "id": 1
+  },
+  "service": {
+    "id": 1
+  }
+}
+
+### [POST] Create Review
+Endpoint: /reviews
+{
+  "rating": 5,
+  "comment": "Excellent and fast service.",
+  "customer": {
+    "id": 1
+  },
+  "service": {
+    "id": 1
+  }
+}
+
+### [POST] Create Reply
+Endpoint: /replies
+{
+  "message": "Thank you for your feedback.",
+  "review": {
+    "id": 1
+  },
+  "provider": {
+    "id": 2
+  }
+}
+
+### [PUT] Update User
+Endpoint: /users/1
+{
+  "firstName": "Rayyan",
+  "lastName": "Othman",
+  "email": "rayyan@email.com",
+  "password": "newpassword123",
+  "phone": "3369781184",
+  "role": "CUSTOMER",
+  "accountStatus": "ACTIVE"
+}
+
+### [PUT] Update Service
+Endpoint: /services/1
+{
+  "title": "Full Car Detailing",
+  "description": "Updated detailing service package",
+  "price": 159.99,
+  "category": "Detailing",
+  "availability": "Available",
+  "provider": {
+    "id": 2
+  }
+}
+
+### [PUT] Update Booking
+Endpoint: /bookings/1
+{
+  "bookingDate": "2026-03-26",
+  "status": "COMPLETED",
+  "customer": {
+    "id": 1
+  },
+  "service": {
+    "id": 1
+  }
+}
+
+### [PUT] Update Review
+Endpoint: /reviews/1
+{
+  "rating": 4,
+  "comment": "Good service overall.",
+  "customer": {
+    "id": 1
+  },
+  "service": {
+    "id": 1
+  }
 }
