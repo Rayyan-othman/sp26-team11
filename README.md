@@ -89,10 +89,12 @@ Our project is a system/service that allows the customer to book mobie on site g
 
 ---
 
-## Example Requests & Responses
+## Use Case Mapping with Example Requests & Responses
 
-### [POST] Create Customer
-Endpoint: /users
+### Customer Use Cases
+
+#### Create Customer Profile
+Endpoint: POST /users
 
 Request:
 {
@@ -118,153 +120,8 @@ Response:
 
 ---
 
-### [POST] Create Provider
-Endpoint: /users
-
-Request:
-{
-  "firstName": "John",
-  "lastName": "Mechanic",
-  "email": "john@autobid.com",
-  "password": "123456",
-  "phone": "3361112222",
-  "role": "PROVIDER",
-  "accountStatus": "ACTIVE"
-}
-
-Response:
-{
-  "id": 2,
-  "firstName": "John",
-  "lastName": "Mechanic",
-  "email": "john@autobid.com",
-  "phone": "3361112222",
-  "role": "PROVIDER",
-  "accountStatus": "ACTIVE"
-}
-
----
-
-### [POST] Create Service
-Endpoint: /services
-
-Request:
-{
-  "title": "Mobile Oil Change",
-  "description": "On-site oil change service at your location",
-  "price": 89.99,
-  "category": "Mechanic",
-  "availability": "Available",
-  "provider": {
-    "id": 2
-  }
-}
-
-Response:
-{
-  "id": 1,
-  "title": "Mobile Oil Change",
-  "description": "On-site oil change service at your location",
-  "price": 89.99,
-  "category": "Mechanic",
-  "availability": "Available",
-  "provider": {
-    "id": 2
-  }
-}
-
----
-
-### [POST] Create Booking
-Endpoint: /bookings
-
-Request:
-{
-  "bookingDate": "2026-03-24",
-  "status": "CONFIRMED",
-  "customer": {
-    "id": 1
-  },
-  "service": {
-    "id": 1
-  }
-}
-
-Response:
-{
-  "id": 1,
-  "bookingDate": "2026-03-24",
-  "status": "CONFIRMED",
-  "customer": {
-    "id": 1
-  },
-  "service": {
-    "id": 1
-  }
-}
-
----
-
-### [POST] Create Review
-Endpoint: /reviews
-
-Request:
-{
-  "rating": 5,
-  "comment": "Excellent and fast service.",
-  "customer": {
-    "id": 1
-  },
-  "service": {
-    "id": 1
-  }
-}
-
-Response:
-{
-  "id": 1,
-  "rating": 5,
-  "comment": "Excellent and fast service.",
-  "customer": {
-    "id": 1
-  },
-  "service": {
-    "id": 1
-  }
-}
-
----
-
-### [POST] Create Reply
-Endpoint: /replies
-
-Request:
-{
-  "message": "Thank you for your feedback.",
-  "review": {
-    "id": 1
-  },
-  "provider": {
-    "id": 2
-  }
-}
-
-Response:
-{
-  "id": 1,
-  "message": "Thank you for your feedback.",
-  "review": {
-    "id": 1
-  },
-  "provider": {
-    "id": 2
-  }
-}
-
----
-
-### [PUT] Update User
-Endpoint: /users/1
+#### Modify Customer Profile
+Endpoint: PUT /users/1
 
 Request:
 {
@@ -290,90 +147,209 @@ Response:
 
 ---
 
-### [PUT] Update Service
-Endpoint: /services/1
+#### View Available Services
+Endpoint: GET /services
+
+Response:
+[
+  {
+    "id": 1,
+    "title": "Mobile Oil Change",
+    "description": "On-site oil change service",
+    "price": 89.99,
+    "category": "Mechanic",
+    "availability": "Available"
+  }
+]
+
+---
+
+#### Book Service
+Endpoint: POST /bookings
 
 Request:
 {
-  "title": "Full Car Detailing",
-  "description": "Updated detailing service package",
-  "price": 159.99,
-  "category": "Detailing",
-  "availability": "Available",
-  "provider": {
-    "id": 2
-  }
+  "bookingDate": "2026-03-24",
+  "status": "CONFIRMED",
+  "customer": { "id": 1 },
+  "service": { "id": 1 }
 }
 
 Response:
 {
   "id": 1,
-  "title": "Full Car Detailing",
-  "description": "Updated detailing service package",
-  "price": 159.99,
-  "category": "Detailing",
-  "availability": "Available",
-  "provider": {
-    "id": 2
-  }
+  "bookingDate": "2026-03-24",
+  "status": "CONFIRMED"
 }
 
 ---
 
-### [PUT] Update Booking
-Endpoint: /bookings/1
+#### Write Review
+Endpoint: POST /reviews
 
 Request:
 {
-  "bookingDate": "2026-03-26",
-  "status": "COMPLETED",
-  "customer": {
-    "id": 1
-  },
-  "service": {
-    "id": 1
-  }
+  "rating": 5,
+  "comment": "Excellent and fast service.",
+  "customer": { "id": 1 },
+  "service": { "id": 1 }
 }
 
 Response:
 {
   "id": 1,
-  "bookingDate": "2026-03-26",
-  "status": "COMPLETED",
-  "customer": {
-    "id": 1
-  },
-  "service": {
-    "id": 1
-  }
+  "rating": 5,
+  "comment": "Excellent and fast service."
 }
 
 ---
 
-### [PUT] Update Review
-Endpoint: /reviews/1
+### Provider Use Cases
+
+#### Create Provider Profile
+Endpoint: POST /users
 
 Request:
 {
-  "rating": 4,
-  "comment": "Good service overall.",
-  "customer": {
-    "id": 1
-  },
-  "service": {
-    "id": 1
-  }
+  "firstName": "John",
+  "lastName": "Mechanic",
+  "email": "john@autobid.com",
+  "password": "123456",
+  "phone": "3361112222",
+  "role": "PROVIDER",
+  "accountStatus": "ACTIVE"
+}
+
+Response:
+{
+  "id": 2,
+  "firstName": "John",
+  "lastName": "Mechanic",
+  "email": "john@autobid.com",
+  "phone": "3361112222",
+  "role": "PROVIDER",
+  "accountStatus": "ACTIVE"
+}
+
+---
+
+#### Create Service
+Endpoint: POST /services
+
+Request:
+{
+  "title": "Mobile Oil Change",
+  "description": "On-site oil change service",
+  "price": 89.99,
+  "category": "Mechanic",
+  "availability": "Available",
+  "provider": { "id": 2 }
 }
 
 Response:
 {
   "id": 1,
-  "rating": 4,
-  "comment": "Good service overall.",
-  "customer": {
-    "id": 1
+  "title": "Mobile Oil Change",
+  "price": 89.99
+}
+
+---
+
+#### View Customer Statistics
+Endpoint: GET /statistics/provider/2
+
+Response:
+{
+  "providerId": 2,
+  "servicesCreated": 1,
+  "bookingsForProvider": 1,
+  "reviewsForProvider": 1
+}
+
+---
+
+#### Reply to Review
+Endpoint: POST /replies
+
+Request:
+{
+  "message": "Thank you for your feedback.",
+  "review": { "id": 1 },
+  "provider": { "id": 2 }
+}
+
+Response:
+{
+  "id": 1,
+  "message": "Thank you for your feedback."
+}
+
+---
+
+### SysAdmin Use Cases
+
+#### Manage Users
+Endpoint: GET /users
+
+Response:
+[
+  {
+    "id": 1,
+    "email": "rayyan@email.com",
+    "role": "CUSTOMER"
   },
-  "service": {
-    "id": 1
+  {
+    "id": 2,
+    "email": "john@autobid.com",
+    "role": "PROVIDER"
   }
+]
+
+---
+
+#### Ban User
+Endpoint: PUT /users/1
+
+Request:
+{
+  "accountStatus": "BANNED"
+}
+
+Response:
+{
+  "id": 1,
+  "accountStatus": "BANNED"
+}
+
+---
+
+#### Moderate Services
+Endpoint: DELETE /services/1
+
+Response:
+{
+  "message": "Service deleted successfully"
+}
+
+---
+
+#### Moderate Reviews
+Endpoint: DELETE /reviews/1
+
+Response:
+{
+  "message": "Review deleted successfully"
+}
+
+---
+
+#### View Platform Statistics
+Endpoint: GET /statistics
+
+Response:
+{
+  "totalUsers": 2,
+  "totalServices": 1,
+  "totalBookings": 1,
+  "totalReviews": 1
 }
