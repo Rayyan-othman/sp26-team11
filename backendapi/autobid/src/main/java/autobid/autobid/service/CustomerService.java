@@ -1,8 +1,11 @@
-package com.backendapi.autobid;
+package autobid.autobid.service;
+
+import autobid.autobid.entity.Customer;
+import autobid.autobid.repository.CustomerRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
-import org.springframework.stereotype.Service;
+import java.util.Optional;
 
 @Service
 public class CustomerService {
@@ -17,25 +20,25 @@ public class CustomerService {
         return customerRepository.findAll();
     }
 
-    public Customer getCustomerById(Long id) {
-        return customerRepository.findById(id).orElse(null);
+    public Optional<Customer> getCustomerById(Long id) {
+        return customerRepository.findById(id);
     }
 
-    public Customer addCustomer(Customer customer) {
+    public Customer createCustomer(Customer customer) {
         return customerRepository.save(customer);
     }
 
     public Customer updateCustomer(Long id, Customer updatedCustomer) {
-        Customer existingCustomer = customerRepository.findById(id).orElse(null);
+        return customerRepository.findById(id).map(customer -> {
+            customer.setFirstName(updatedCustomer.getFirstName());
+            customer.setLastName(updatedCustomer.getLastName());
+            customer.setEmail(updatedCustomer.getEmail());
+            customer.setPhone(updatedCustomer.getPhone());
+            return customerRepository.save(customer);
+        }).orElse(null);
+    }
 
-        if (existingCustomer != null) {
-            existingCustomer.setName(updatedCustomer.getName());
-            existingCustomer.setEmail(updatedCustomer.getEmail());
-            existingCustomer.setPhone(updatedCustomer.getPhone());
-            existingCustomer.setAddress(updatedCustomer.getAddress());
-            return customerRepository.save(existingCustomer);
-        }
-
-        return null;
+    public void deleteCustomer(Long id) {
+        customerRepository.deleteById(id);
     }
 }

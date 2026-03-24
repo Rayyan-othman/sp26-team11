@@ -1,8 +1,10 @@
-package com.backendapi.autobid;
+package autobid.autobid.controller;
 
 import java.util.List;
+import java.util.Optional;
 
-import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,8 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import autobid.autobid.entity.Customer;
+import autobid.autobid.service.CustomerService;
+
 @RestController
-@RequestMapping("/api/customers")
+@RequestMapping("/customers")
+@CrossOrigin
 public class CustomerApiController {
 
     private final CustomerService customerService;
@@ -21,31 +27,28 @@ public class CustomerApiController {
         this.customerService = customerService;
     }
 
-    @GetMapping("/")
+    @GetMapping
     public List<Customer> getAllCustomers() {
         return customerService.getAllCustomers();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Customer> getCustomerById(@PathVariable Long id) {
-        Customer customer = customerService.getCustomerById(id);
-        if (customer != null) {
-            return ResponseEntity.ok(customer);
-        }
-        return ResponseEntity.notFound().build();
+    public Optional<Customer> getCustomerById(@PathVariable Long id) {
+        return customerService.getCustomerById(id);
     }
 
-    @PostMapping("/")
-    public Customer addCustomer(@RequestBody Customer customer) {
-        return customerService.addCustomer(customer);
+    @PostMapping
+    public Customer createCustomer(@RequestBody Customer customer) {
+        return customerService.createCustomer(customer);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Customer> updateCustomer(@PathVariable Long id, @RequestBody Customer customer) {
-        Customer updatedCustomer = customerService.updateCustomer(id, customer);
-        if (updatedCustomer != null) {
-            return ResponseEntity.ok(updatedCustomer);
-        }
-        return ResponseEntity.notFound().build();
+    public Customer updateCustomer(@PathVariable Long id, @RequestBody Customer customer) {
+        return customerService.updateCustomer(id, customer);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteCustomer(@PathVariable Long id) {
+        customerService.deleteCustomer(id);
     }
 }

@@ -1,4 +1,4 @@
-package com.backendapi.autobid;
+package autobid.autobid.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,38 +12,38 @@ public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long customerId;
+    private Long id;
 
-    private String name;
+    private String firstName;
+    private String lastName;
     private String email;
     private String phone;
-    private String address;
 
     public Customer() {
     }
 
-    public Customer(Long customerId, String name, String email, String phone, String address) {
-        this.customerId = customerId;
-        this.name = name;
-        this.email = email;
-        this.phone = phone;
-        this.address = address;
+    public Long getId() {
+        return id;
     }
 
-    public Long getCustomerId() {
-        return customerId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public String getName() {
-        return name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getEmail() {
@@ -60,13 +60,5 @@ public class Customer {
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 }
