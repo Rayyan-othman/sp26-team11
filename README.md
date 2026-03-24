@@ -36,5 +36,67 @@ Our project is a system/service that allows the customer to book mobie on site g
     2. Moderate services - can remove add change or adjust the app ,services or users if needed.
     3. Moderate reviews - allows for removing commenting and moderation of all reveiw left by customers and providers.
     4. View usage statistics - System admine user can collect veiw and save data statistivs collected from the customer and provider use cases.
+
+
+       ### SysAdmin Use Cases
+- Manage user access -> `GET /users`, `PUT /users/{id}`
+- Moderate services -> `GET /services`, `DELETE /services/{id}`
+- Moderate reviews -> `GET /reviews`, `DELETE /reviews/{id}`
+- View usage statistics -> `GET /statistics`
+  ## API Endpoints
+
+### User Endpoints
+- `GET /users` -> Get all users
+- `GET /users/{id}` -> Get user by id
+- `POST /users` -> Create a new user
+- `PUT /users/{id}` -> Update an existing user
+- `DELETE /users/{id}` -> Delete a user
+
+### Service Endpoints
+- `GET /services` -> Get all services
+- `GET /services/{id}` -> Get service by id
+- `POST /services` -> Create a new service
+- `PUT /services/{id}` -> Update an existing service
+- `DELETE /services/{id}` -> Delete a service
+
+### Booking Endpoints
+- `GET /bookings` -> Get all bookings
+- `GET /bookings/{id}` -> Get booking by id
+- `POST /bookings` -> Create a new booking
+- `PUT /bookings/{id}` -> Update an existing booking
+- `DELETE /bookings/{id}` -> Delete a booking
+
+### Review Endpoints
+- `GET /reviews` -> Get all reviews
+- `GET /reviews/{id}` -> Get review by id
+- `GET /reviews/provider/{providerId}` -> Get reviews for a provider
+- `POST /reviews` -> Create a new review
+- `PUT /reviews/{id}` -> Update an existing review
+- `DELETE /reviews/{id}` -> Delete a review
+
+### Reply Endpoints
+- `GET /replies` -> Get all replies
+- `GET /replies/{id}` -> Get reply by id
+- `POST /replies` -> Create a reply to a review
+
+### Statistics Endpoints
+- `GET /statistics` -> View overall platform statistics
+- `GET /statistics/provider/{providerId}` -> View statistics for a specific provider
+
+---
+
+## Example JSON Requests
+
+### Create Customer
+```json
+{
+  "firstName": "Rayyan",
+  "lastName": "Othman",
+  "email": "rayyan@email.com",
+  "password": "123456",
+  "phone": "3369781184",
+  "role": "CUSTOMER",
+  "accountStatus": "ACTIVE"
+}
   
 <img width="3024" height="4032" alt="image" src="https://github.com/user-attachments/assets/cecd5fe4-f604-4523-bc59-7704f7de5815" />
