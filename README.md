@@ -89,11 +89,12 @@ Our project is a system/service that allows the customer to book mobie on site g
 
 ---
 
-## Example JSON Requests
-
+## Example Requests & Responses
 
 ### [POST] Create Customer
 Endpoint: /users
+
+Request:
 {
   "firstName": "Rayyan",
   "lastName": "Othman",
@@ -104,8 +105,23 @@ Endpoint: /users
   "accountStatus": "ACTIVE"
 }
 
+Response:
+{
+  "id": 1,
+  "firstName": "Rayyan",
+  "lastName": "Othman",
+  "email": "rayyan@email.com",
+  "phone": "3369781184",
+  "role": "CUSTOMER",
+  "accountStatus": "ACTIVE"
+}
+
+---
+
 ### [POST] Create Provider
 Endpoint: /users
+
+Request:
 {
   "firstName": "John",
   "lastName": "Mechanic",
@@ -116,8 +132,23 @@ Endpoint: /users
   "accountStatus": "ACTIVE"
 }
 
+Response:
+{
+  "id": 2,
+  "firstName": "John",
+  "lastName": "Mechanic",
+  "email": "john@autobid.com",
+  "phone": "3361112222",
+  "role": "PROVIDER",
+  "accountStatus": "ACTIVE"
+}
+
+---
+
 ### [POST] Create Service
 Endpoint: /services
+
+Request:
 {
   "title": "Mobile Oil Change",
   "description": "On-site oil change service at your location",
@@ -129,8 +160,25 @@ Endpoint: /services
   }
 }
 
+Response:
+{
+  "id": 1,
+  "title": "Mobile Oil Change",
+  "description": "On-site oil change service at your location",
+  "price": 89.99,
+  "category": "Mechanic",
+  "availability": "Available",
+  "provider": {
+    "id": 2
+  }
+}
+
+---
+
 ### [POST] Create Booking
 Endpoint: /bookings
+
+Request:
 {
   "bookingDate": "2026-03-24",
   "status": "CONFIRMED",
@@ -142,8 +190,25 @@ Endpoint: /bookings
   }
 }
 
+Response:
+{
+  "id": 1,
+  "bookingDate": "2026-03-24",
+  "status": "CONFIRMED",
+  "customer": {
+    "id": 1
+  },
+  "service": {
+    "id": 1
+  }
+}
+
+---
+
 ### [POST] Create Review
 Endpoint: /reviews
+
+Request:
 {
   "rating": 5,
   "comment": "Excellent and fast service.",
@@ -155,8 +220,25 @@ Endpoint: /reviews
   }
 }
 
+Response:
+{
+  "id": 1,
+  "rating": 5,
+  "comment": "Excellent and fast service.",
+  "customer": {
+    "id": 1
+  },
+  "service": {
+    "id": 1
+  }
+}
+
+---
+
 ### [POST] Create Reply
 Endpoint: /replies
+
+Request:
 {
   "message": "Thank you for your feedback.",
   "review": {
@@ -167,8 +249,24 @@ Endpoint: /replies
   }
 }
 
+Response:
+{
+  "id": 1,
+  "message": "Thank you for your feedback.",
+  "review": {
+    "id": 1
+  },
+  "provider": {
+    "id": 2
+  }
+}
+
+---
+
 ### [PUT] Update User
 Endpoint: /users/1
+
+Request:
 {
   "firstName": "Rayyan",
   "lastName": "Othman",
@@ -179,8 +277,23 @@ Endpoint: /users/1
   "accountStatus": "ACTIVE"
 }
 
+Response:
+{
+  "id": 1,
+  "firstName": "Rayyan",
+  "lastName": "Othman",
+  "email": "rayyan@email.com",
+  "phone": "3369781184",
+  "role": "CUSTOMER",
+  "accountStatus": "ACTIVE"
+}
+
+---
+
 ### [PUT] Update Service
 Endpoint: /services/1
+
+Request:
 {
   "title": "Full Car Detailing",
   "description": "Updated detailing service package",
@@ -192,8 +305,25 @@ Endpoint: /services/1
   }
 }
 
+Response:
+{
+  "id": 1,
+  "title": "Full Car Detailing",
+  "description": "Updated detailing service package",
+  "price": 159.99,
+  "category": "Detailing",
+  "availability": "Available",
+  "provider": {
+    "id": 2
+  }
+}
+
+---
+
 ### [PUT] Update Booking
 Endpoint: /bookings/1
+
+Request:
 {
   "bookingDate": "2026-03-26",
   "status": "COMPLETED",
@@ -205,9 +335,39 @@ Endpoint: /bookings/1
   }
 }
 
+Response:
+{
+  "id": 1,
+  "bookingDate": "2026-03-26",
+  "status": "COMPLETED",
+  "customer": {
+    "id": 1
+  },
+  "service": {
+    "id": 1
+  }
+}
+
+---
+
 ### [PUT] Update Review
 Endpoint: /reviews/1
+
+Request:
 {
+  "rating": 4,
+  "comment": "Good service overall.",
+  "customer": {
+    "id": 1
+  },
+  "service": {
+    "id": 1
+  }
+}
+
+Response:
+{
+  "id": 1,
   "rating": 4,
   "comment": "Good service overall.",
   "customer": {
