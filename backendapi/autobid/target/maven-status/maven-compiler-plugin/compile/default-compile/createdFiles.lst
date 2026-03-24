@@ -1,0 +1,10 @@
+autobid\autobid\entity\ServiceEntity.class
+autobid\autobid\dto\AdminStatsResponse.class
+autobid\autobid\repository\ServiceRepository.class
+autobid\autobid\repository\ReviewRepository.class
+autobid\autobid\repository\UserRepository.class
+autobid\autobid\AutobidApplication.class
+autobid\autobid\controller\AdminController.class
+autobid\autobid\entity\Review.class
+autobid\autobid\entity\User.class
+autobid\autobid\service\AdminService.class
