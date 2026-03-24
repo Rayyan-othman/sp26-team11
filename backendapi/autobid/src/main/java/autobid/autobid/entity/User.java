@@ -17,7 +17,7 @@ public class User {
     private String name;
     private String email;
     private String role;
-    private String accountStatus;
+    private String accountStatus; // <-- move it up here
 
     public User() {
     }
@@ -33,7 +33,9 @@ public class User {
         return id;
     }
 
-    public void setId(Long id) { this.id = id; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
