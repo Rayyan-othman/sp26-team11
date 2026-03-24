@@ -37,5 +37,4 @@ Our project is a system/service that allows the customer to book mobie on site g
     3. Moderate reviews - allows for removing commenting and moderation of all reveiw left by customers and providers.
     4. View usage statistics - System admine user can collect veiw and save data statistivs collected from the customer and provider use cases.
   
-       <img width="3024" height="4032" alt="image" src="https://github.com/user-attachments/assets/1404dc1b-4e96-46bd-9013![032419BD-BE75-4F09-B05A-00B62E625A99](https://github.com/user-attachments/assets/847ae0fe-aeb6-4dcf-b3d2-b6c72e742a23)
--57ab639122df" />
+<img width="3024" height="4032" alt="image" src="https://github.com/user-attachments/assets/cecd5fe4-f604-4523-bc59-7704f7de5815" />
