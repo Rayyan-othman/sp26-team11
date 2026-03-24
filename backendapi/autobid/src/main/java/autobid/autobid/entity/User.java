@@ -1,10 +1,6 @@
 package autobid.autobid.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "users")
@@ -17,23 +13,23 @@ public class User {
     private String name;
     private String email;
     private String role;
-    private String accountStatus;
 
     public User() {
     }
 
-    public User(String name, String email, String role, String accountStatus) {
+    public User(String name, String email, String role) {
         this.name = name;
         this.email = email;
         this.role = role;
-        this.accountStatus = accountStatus;
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) { this.id = id; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -57,13 +53,5 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
-    }
-
-    public String getAccountStatus() {
-        return accountStatus;
-    }
-
-    public void setAccountStatus(String accountStatus) {
-        this.accountStatus = accountStatus;
     }
 }

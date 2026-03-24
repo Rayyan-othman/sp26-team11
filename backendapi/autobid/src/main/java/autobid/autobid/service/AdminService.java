@@ -1,67 +1,48 @@
 package autobid.autobid.service;
 
-import java.util.List;
-
+import autobid.autobid.entity.User;
+import autobid.autobid.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
-import autobid.autobid.dto.AdminStatsResponse;
-import autobid.autobid.entity.Review;
-import autobid.autobid.entity.ServiceEntity;
-import autobid.autobid.entity.User;
-import autobid.autobid.repository.ReviewRepository;
-import autobid.autobid.repository.ServiceRepository;
-import autobid.autobid.repository.UserRepository;
+import java.util.List;
 
 @Service
 public class AdminService {
 
     private final UserRepository userRepository;
-    private final ServiceRepository serviceRepository;
-    private final ReviewRepository reviewRepository;
 
-    public AdminService(UserRepository userRepository,
-                        ServiceRepository serviceRepository,
-                        ReviewRepository reviewRepository) {
+    public AdminService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.serviceRepository = serviceRepository;
-        this.reviewRepository = reviewRepository;
+    }
+
+    public User createUser(User user) {
+        return userRepository.save(user);
     }
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    public User updateUserStatus(Long id, String status) {
-        User user = userRepository.findById(id).orElseThrow();
-        user.setAccountStatus(status);
-        return userRepository.save(user);
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
     }
 
-    public List<ServiceEntity> getAllServices() {
-        return serviceRepository.findAll();
+    public User updateUser(Long id, User updatedUser) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+
+        existingUser.setName(updatedUser.getName());
+        existingUser.setEmail(updatedUser.getEmail());
+        existingUser.setRole(updatedUser.getRole());
+
+        return userRepository.save(existingUser);
     }
 
-    public void deleteService(Long id) {
-        serviceRepository.deleteById(id);
-    }
+    public void deleteUser(Long id) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
 
-    public List<Review> getAllReviews() {
-        return reviewRepository.findAll();
-    }
-
-    public List<Review> getReviewsByService(Long serviceId) {
-        return reviewRepository.findByServiceId(serviceId);
-    }
-
-    public void deleteReview(Long id) {
-        reviewRepository.deleteById(id);
-    }
-
-    public AdminStatsResponse getStatistics() {
-        return new AdminStatsResponse(
-                userRepository.count(),
-                serviceRepository.count(),
-                reviewRepository.count()
-        );
+        userRepository.delete(existingUser);
     }
 }

@@ -1,68 +1,51 @@
 package autobid.autobid.controller;
 
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import autobid.autobid.dto.AdminStatsResponse;
-import autobid.autobid.entity.Review;
-import autobid.autobid.entity.ServiceEntity;
 import autobid.autobid.entity.User;
 import autobid.autobid.service.AdminService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/admin")
+@CrossOrigin(origins = "*")
 public class AdminController {
 
     private final AdminService adminService;
+
     public AdminController(AdminService adminService) {
         this.adminService = adminService;
     }
 
+    // CREATE USER
+    @PostMapping("/users")
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        return ResponseEntity.ok(adminService.createUser(user));
+    }
+
+    // GET ALL USERS
     @GetMapping("/users")
-    public List<User> getUsers() {
-        return adminService.getAllUsers();
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(adminService.getAllUsers());
     }
 
-    @PutMapping("/users/{id}/status")
-    public User updateUserStatus(@PathVariable Long id, @RequestBody Map<String, String> body) {
-        return adminService.updateUserStatus(id, body.get("accountStatus"));
+    // GET USER BY ID
+    @GetMapping("/users/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        return ResponseEntity.ok(adminService.getUserById(id));
     }
 
-    @GetMapping("/services")
-    public List<ServiceEntity> getServices() {
-        return adminService.getAllServices();
+    // UPDATE USER
+    @PutMapping("/users/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
+        return ResponseEntity.ok(adminService.updateUser(id, updatedUser));
     }
 
-    @DeleteMapping("/services/{id}")
-    public void deleteService(@PathVariable Long id) {
-        adminService.deleteService(id);
-    }
-
-    @GetMapping("/reviews")
-    public List<Review> getReviews() {
-        return adminService.getAllReviews();
-    }
-
-    @GetMapping("/services/{serviceId}/reviews")
-    public List<Review> getReviewsByService(@PathVariable Long serviceId) {
-        return adminService.getReviewsByService(serviceId);
-    }
-
-    @DeleteMapping("/reviews/{id}")
-    public void deleteReview(@PathVariable Long id) {
-        adminService.deleteReview(id);
-    }
-
-    @GetMapping("/statistics")
-    public AdminStatsResponse getStatistics() {
-        return adminService.getStatistics();
+    // DELETE USER
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+        adminService.deleteUser(id);
+        return ResponseEntity.ok("User deleted successfully");
     }
 }
