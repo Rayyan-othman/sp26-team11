@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en" class="h-100">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>AutoBid Provider Dashboard</title>
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="../css/provider-style.css">
+
+</head>
+
+<body class="d-flex h-100 text-center text-white">
+  <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    <header class="mb-auto">
+      <div>
+        <h3 class="float-md-start mb-0 fw-bold">AutoBid</h3>
+
+        <nav class="nav nav-masthead justify-content-center float-md-end">
+          <a class="nav-link active" href="#">Dashboard</a>
+          <a class="nav-link" href="provider-login.html">Login</a>
+          <a class="nav-link" href="provider-stats.html">Povider Availability & Statistics</a>
+
+        </nav>
+      </div>
+    </header>
+
+    <main class="px-3 w-100">
+      <h1 class="fw-bold mb-4">Provider Dashboard</h1>
+
+      <!-- Profile Section -->
+      <div class="glass p-4 mb-4">
+        <h4>Create / Update Profile</h4>
+
+        <div class="sticky-btn mb-2">
+          <button class="btn btn-accent w-100" onclick="createProfile()">
+            Save Profile
+          </button>
+        </div>
+
+        <textarea
+          id="qualifications"
+          rows="2"
+          class="form-control mt-2"
+          placeholder="Enter qualifications & certifications"
+        ></textarea>
+
+        <div id="profileOutput" class="output"></div>
+      </div>
+
+      <!-- Service Section -->
+      <div class="glass p-4 mb-4">
+        <h4>Create Service Listing</h4>
+
+        <div class="sticky-btn mb-2">
+          <button class="btn btn-accent w-100" onclick="createService()">
+            Publish Service
+          </button>
+        </div>
+
+        <input
+          id="serviceName"
+          class="form-control mt-2 mb-2"
+          type="text"
+          placeholder="Service Name"
+        >
+
+        <textarea
+          id="serviceDesc"
+          class="form-control mb-2"
+          rows="2"
+          placeholder="Description"
+        ></textarea>
+
+        <input
+          id="servicePrice"
+          class="form-control mb-2"
+          type="number"
+          placeholder="Price ($)"
+        >
+
+        <div id="serviceOutput" class="output"></div>
+      </div>
+
+      <!-- Availability Section -->
+      <div class="glass p-4 mb-4">
+        <h4>Update Availability</h4>
+
+        <div class="sticky-btn mb-2">
+          <button class="btn btn-accent w-100" onclick="updateAvailability()">
+            Add Availability
+          </button>
+        </div>
+
+        <div class="row g-2 mt-2">
+          <div class="col-md-4">
+            <input id="availDate" class="form-control" type="date">
+          </div>
+
+          <div class="col-md-3">
+            <input id="availStart" class="form-control" type="time">
+          </div>
+
+          <div class="col-md-3">
+            <input id="availEnd" class="form-control" type="time">
+          </div>
+        </div>
+
+        <div id="availabilityOutput" class="output"></div>
+      </div>
+
+      <!-- Booking Stats Section -->
+      <div class="glass p-4 mb-4">
+        <h4>View Booking Statistics</h4>
+
+        <div class="sticky-btn mb-2">
+          <button class="btn btn-accent w-100" onclick="viewStats">
+            Show Stats
+          </button>
+        </div>
+
+        <div id="statsOutput" class="output mt-2"></div>
+      </div>
+
+      <!-- Reviews Section -->
+      <div class="glass p-4 mb-4">
+        <h4>Reply to Reviews</h4>
+
+        <div class="sticky-btn mb-2">
+          <button class="btn btn-accent w-100" onclick="replyReview()">
+            Submit Reply
+          </button>
+        </div>
+
+        <select
+          id="reviewSelect"
+          class="form-select mt-2 mb-2"
+        ></select>
+
+        <textarea
+          id="reviewReply"
+          class="form-control mb-2"
+          rows="2"
+          placeholder="Enter your reply"
+        ></textarea>
+
+        <div id="replyOutput" class="output"></div>
+      </div>
+    </main>
+
+    <footer class="mt-auto text-white-50">
+      <p class="mb-0 small">
+        AutoBid • UI-only prototype • hard-coded placeholder data
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    // Provider Data
+    let providerProfile = {};
+    let services = [];
+    let availability = [];
+
+    // Sample bookings
+    let bookingHistory = [
+      { service: "Oil Change",   customer: "Alice",   rating: 5, date: "2026-02-10" },
+      { service: "Car Wash",     customer: "Bob",     rating: 4, date: "2026-02-12" },
+      { service: "Brake Check",  customer: "Charlie", rating: 5, date: "2026-02-15" },
+      { service: "Tire Rotation",customer: "Diana",   rating: 4, date: "2026-02-16" }
+    ];
+
+    // Sample reviews
+    let reviews = [
+      { customer: "Alice",   review: "Great service!",           reply: "" },
+      { customer: "Bob",     review: "Quick and professional.",  reply: "" },
+      { customer: "Charlie", review: "Could improve timing.",    reply: "" }
+    ];
+
+    // Populate review dropdown
+    const reviewSelect = document.getElementById("reviewSelect");
+
+    function populateReviews() {
+      reviewSelect.innerHTML = "";
+      reviews.forEach((r, index) => {
+        const option = document.createElement("option");
+        option.value = index;
+        option.text = `${r.customer}: "${r.review}"${r.reply ? " (Replied)" : ""}`;
+        reviewSelect.add(option);
+      });
+    }
+
+    populateReviews();
+
+    function createProfile() {
+      const quals = document.getElementById("qualifications").value;
+      providerProfile.qualifications = quals;
+      document.getElementById("profileOutput").innerText =
+        `Profile saved!\nQualifications: ${quals}`;
+    }
+
+    function createService() {
+      const name  = document.getElementById("serviceName").value;
+      const desc  = document.getElementById("serviceDesc").value;
+      const price = document.getElementById("servicePrice").value;
+
+      const service = { name, desc, price, status: "Published" };
+      services.push(service);
+
+      document.getElementById("serviceOutput").innerText =
+        `Service "${name}" published!\nDescription: ${desc}\nPrice: $${price}\nStatus: Published`;
+    }
+
+    function updateAvailability() {
+      const date  = document.getElementById("availDate").value;
+      const start = document.getElementById("availStart").value;
+      const end   = document.getElementById("availEnd").value;
+
+      if (date && start && end) {
+        availability.push({ date, start, end });
+
+        let text = "Updated Availability:\n";
+        availability.forEach(a => {
+          text += `${a.date}: ${a.start} - ${a.end}\n`;
+        });
+
+        document.getElementById("availabilityOutput").innerText = text;
+      } else {
+        alert("Please select date, start and end time.");
+      }
+    }
+
+    function viewStats() {
+      const avgRating =
+        bookingHistory.reduce((a, b) => a + b.rating, 0) / bookingHistory.length;
+
+      let historyText = bookingHistory
+        .map(b => `${b.date}: ${b.customer} booked ${b.service} (Rating: ${b.rating})`)
+        .join("\n");
+
+      document.getElementById("statsOutput").innerText =
+        `Booking History:\n${historyText}\n\nAverage Rating: ${avgRating.toFixed(2)}`;
+    }
+
+    function replyReview() {
+      const index     = reviewSelect.value;
+      const replyText = document.getElementById("reviewReply").value;
+
+      if (index !== null && replyText) {
+        reviews[index].reply = replyText;
+
+        document.getElementById("replyOutput").innerText =
+          `Reply submitted:\n"${replyText}"\nAppears under review: "${reviews[index].review}"`;
+
+        populateReviews();
+      } else {
+        alert("Select a review and enter a reply.");
+      }
+    }
+  </script>
+</body>
+</html>
