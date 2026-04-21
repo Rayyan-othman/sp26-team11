@@ -1,18 +1,22 @@
 package autobid.autobid.service;
 
-import autobid.autobid.entity.User;
-import autobid.autobid.repository.UserRepository;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import autobid.autobid.entity.User;
+import autobid.autobid.repository.ServiceRepository;
+import autobid.autobid.repository.UserRepository;
 
 @Service
 public class AdminService {
 
     private final UserRepository userRepository;
+    private final ServiceRepository serviceRepository;
 
-    public AdminService(UserRepository userRepository) {
+    public AdminService(UserRepository userRepository, ServiceRepository serviceRepository) {
         this.userRepository = userRepository;
+        this.serviceRepository = serviceRepository;
     }
 
     public User createUser(User user) {
@@ -39,10 +43,16 @@ public class AdminService {
         return userRepository.save(existingUser);
     }
 
-    public void deleteUser(Long id) {
-        User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+   public void deleteUser(Long id) {
+    User existingUser = userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
 
-        userRepository.delete(existingUser);
+    boolean hasServices = serviceRepository.existsByProviderId(id);
+
+    if (hasServices) {
+        throw new RuntimeException("Cannot delete this user because they still own services.");
     }
+
+    userRepository.delete(existingUser);
+}
 }
