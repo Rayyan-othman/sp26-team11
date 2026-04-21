@@ -221,11 +221,6 @@
             color: #eef3fb;
         }
 
-        .muted {
-            color: #9cb0cc;
-            font-size: 14px;
-        }
-
         .role-badge {
             display: inline-block;
             padding: 8px 12px;
@@ -247,6 +242,16 @@
 
         .role-customer {
             background: rgba(255, 193, 7, 0.18);
+            color: #ffe493;
+        }
+
+        .rating-badge {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: bold;
+            background: rgba(255,255,255,0.10);
             color: #ffe493;
         }
 
@@ -284,78 +289,35 @@
             padding: 20px 22px;
         }
 
-        .form-group {
-            margin-bottom: 14px;
+        .status-line {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #c8d8ef;
         }
 
-        .form-group label {
-            display: block;
+        .service-card {
+            padding: 16px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 12px;
+        }
+
+        .service-title {
+            font-size: 16px;
+            font-weight: bold;
             margin-bottom: 8px;
-            color: #bfd0ea;
+        }
+
+        .service-meta {
+            color: #b7c6dc;
             font-size: 14px;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px 14px;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.10);
-            background: rgba(255,255,255,0.06);
-            color: #fff;
-            outline: none;
-        }
-
-        .form-control::placeholder {
-            color: #a2b2ca;
-        }
-
-        select.form-control option {
-            color: black;
-        }
-
-        .full-btn {
-            width: 100%;
-            padding: 14px;
-            border-radius: 14px;
-            border: none;
-            background: #2d6cdf;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 15px;
-        }
-
-        .status-box {
-            font-size: 14px;
-            color: #c2d3ea;
             line-height: 1.6;
-        }
-
-        .status-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 14px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-        }
-
-        .status-item:last-child {
-            border-bottom: none;
-        }
-
-        .good {
-            color: #9ef0bf;
-            font-weight: bold;
         }
 
         .empty-state {
             padding: 26px 18px;
             color: #b8c8de;
-        }
-
-        .message {
-            margin-top: 12px;
-            font-size: 14px;
-            color: #c8d8ef;
         }
 
         .footer-note {
@@ -409,8 +371,8 @@
             <nav class="nav">
                 <a href="#" class="active">Dashboard</a>
                 <a href="#usersPanel">Users</a>
-                <a href="#createPanel">Create User</a>
-                <a href="#healthPanel">System Health</a>
+                <a href="#reviewsPanel">Reviews</a>
+                <a href="#servicesPanel">Services</a>
             </nav>
         </div>
 
@@ -425,7 +387,7 @@
 
     <main class="main">
         <h1 class="page-title">System Admin Dashboard</h1>
-        <p class="page-subtitle">Manage users with real database data through the Spring Boot backend.</p>
+        <p class="page-subtitle">Manage users, reviews, and services with real database data.</p>
 
         <section class="cards">
             <div class="card">
@@ -441,15 +403,15 @@
             </div>
 
             <div class="card">
-                <div class="card-title">Providers</div>
-                <div class="card-value" id="providerCount">0</div>
-                <div class="card-note">Users whose role is PROVIDER</div>
+                <div class="card-title">Total Reviews</div>
+                <div class="card-value" id="reviewCount">0</div>
+                <div class="card-note">Loaded from reviews endpoint</div>
             </div>
 
             <div class="card">
-                <div class="card-title">Customers</div>
-                <div class="card-value" id="customerCount">0</div>
-                <div class="card-note">Users whose role is CUSTOMER</div>
+                <div class="card-title">Total Services</div>
+                <div class="card-value" id="serviceCount">0</div>
+                <div class="card-note">Loaded from services endpoint</div>
             </div>
         </section>
 
@@ -471,68 +433,43 @@
                             <th>Actions</th>
                         </tr>
                         </thead>
-                        <tbody id="userTableBody">
-                        </tbody>
+                        <tbody id="userTableBody"></tbody>
                     </table>
                 </div>
 
                 <div class="footer-note">
-                    This table is dynamically rendered from the database. No user rows are hardcoded.
+                    This section is loaded from the database. Delete removes the user through the backend.
                 </div>
             </div>
 
             <div class="right-stack">
-                <div class="panel" id="createPanel">
+                <div class="panel" id="reviewsPanel">
                     <div class="panel-header">
-                        <h2>Create User</h2>
-                        <div class="small-link">Real POST request</div>
+                        <h2>Reviews</h2>
+                        <div class="small-link" id="reviewStatus">Loading reviews...</div>
                     </div>
 
-                    <div class="panel-body">
-                        <div class="form-group">
-                            <label for="name">Name</label>
-                            <input id="name" class="form-control" type="text" placeholder="Enter full name">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input id="email" class="form-control" type="email" placeholder="Enter email">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="role">Role</label>
-                            <select id="role" class="form-control">
-                                <option value="ADMIN">ADMIN</option>
-                                <option value="PROVIDER">PROVIDER</option>
-                                <option value="CUSTOMER">CUSTOMER</option>
-                            </select>
-                        </div>
-
-                        <button class="full-btn" type="button" onclick="createUser()">Create User</button>
-                        <p class="message" id="createMsg"></p>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Comment</th>
+                                <th>Rating</th>
+                            </tr>
+                            </thead>
+                            <tbody id="reviewTableBody"></tbody>
+                        </table>
                     </div>
                 </div>
 
-                <div class="panel" id="healthPanel">
+                <div class="panel" id="servicesPanel">
                     <div class="panel-header">
-                        <h2>System Health</h2>
-                        <div class="small-link">Live page checks</div>
+                        <h2>Services</h2>
+                        <div class="small-link" id="serviceStatus">Loading services...</div>
                     </div>
 
-                    <div class="panel-body status-box">
-                        <div class="status-item">
-                            <span>API Endpoint</span>
-                            <span class="good">Connected</span>
-                        </div>
-                        <div class="status-item">
-                            <span>Database-backed Table</span>
-                            <span class="good">Active</span>
-                        </div>
-                        <div class="status-item">
-                            <span>Assignment Compliance</span>
-                            <span class="good">No hardcoded rows</span>
-                        </div>
-                    </div>
+                    <div class="panel-body" id="servicesBody"></div>
                 </div>
             </div>
         </section>
@@ -556,7 +493,7 @@
 
             const users = await response.json();
 
-            updateStats(users);
+            updateUserStats(users);
 
             if (!users || users.length === 0) {
                 tableBody.innerHTML = `
@@ -573,12 +510,8 @@
 
                 row.innerHTML = `
                     <td>${user.id ?? ""}</td>
-                    <td>
-                        <div>${escapeHtml(user.name ?? "")}</div>
-                    </td>
-                    <td>
-                        <div>${escapeHtml(user.email ?? "")}</div>
-                    </td>
+                    <td>${escapeHtml(user.name ?? "")}</td>
+                    <td>${escapeHtml(user.email ?? "")}</td>
                     <td>${renderRoleBadge(user.role)}</td>
                     <td>
                         <div class="action-buttons">
@@ -600,20 +533,119 @@
                 </tr>
             `;
             loadStatus.textContent = "Error loading users.";
-            updateStats([]);
+            updateUserStats([]);
         }
     }
 
-    function updateStats(users) {
+    function updateUserStats(users) {
         const totalUsers = users.length;
         const adminCount = users.filter(user => normalizeRole(user.role) === "ADMIN").length;
-        const providerCount = users.filter(user => normalizeRole(user.role) === "PROVIDER").length;
-        const customerCount = users.filter(user => normalizeRole(user.role) === "CUSTOMER").length;
 
         document.getElementById("totalUsers").textContent = totalUsers;
         document.getElementById("adminCount").textContent = adminCount;
-        document.getElementById("providerCount").textContent = providerCount;
-        document.getElementById("customerCount").textContent = customerCount;
+    }
+
+    async function loadReviews() {
+        const reviewTableBody = document.getElementById("reviewTableBody");
+        const reviewStatus = document.getElementById("reviewStatus");
+
+        reviewTableBody.innerHTML = "";
+        reviewStatus.textContent = "Loading reviews...";
+
+        try {
+            const response = await fetch("/reviews");
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch reviews. Status " + response.status);
+            }
+
+            const reviews = await response.json();
+
+            document.getElementById("reviewCount").textContent = reviews.length;
+
+            if (!reviews || reviews.length === 0) {
+                reviewTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="3" class="empty-state">No reviews found in the database.</td>
+                    </tr>
+                `;
+                reviewStatus.textContent = "No reviews found.";
+                return;
+            }
+
+            reviews.forEach(review => {
+                const row = document.createElement("tr");
+
+                row.innerHTML = `
+                    <td>${review.id ?? ""}</td>
+                    <td>${escapeHtml(review.comment ?? "")}</td>
+                    <td><span class="rating-badge">${review.rating ?? ""}</span></td>
+                `;
+
+                reviewTableBody.appendChild(row);
+            });
+
+            reviewStatus.textContent = "Reviews loaded successfully from database.";
+        } catch (error) {
+            console.error(error);
+            reviewTableBody.innerHTML = `
+                <tr>
+                    <td colspan="3" class="empty-state">Error loading reviews: ${escapeHtml(error.message)}</td>
+                </tr>
+            `;
+            reviewStatus.textContent = "Error loading reviews.";
+            document.getElementById("reviewCount").textContent = "0";
+        }
+    }
+
+    async function loadServices() {
+        const servicesBody = document.getElementById("servicesBody");
+        const serviceStatus = document.getElementById("serviceStatus");
+
+        servicesBody.innerHTML = "";
+        serviceStatus.textContent = "Loading services...";
+
+        try {
+            const response = await fetch("/services");
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch services. Status " + response.status);
+            }
+
+            const services = await response.json();
+
+            document.getElementById("serviceCount").textContent = services.length;
+
+            if (!services || services.length === 0) {
+                servicesBody.innerHTML = `<div class="empty-state">No services found in the database.</div>`;
+                serviceStatus.textContent = "No services found.";
+                return;
+            }
+
+            services.forEach(service => {
+                const card = document.createElement("div");
+                card.className = "service-card";
+
+                card.innerHTML = `
+                    <div class="service-title">${escapeHtml(service.title ?? "Untitled Service")}</div>
+                    <div class="service-meta">
+                        <div><strong>Description:</strong> ${escapeHtml(service.description ?? "N/A")}</div>
+                        <div><strong>Category:</strong> ${escapeHtml(service.category ?? "N/A")}</div>
+                        <div><strong>Price:</strong> ${service.price ?? "N/A"}</div>
+                        <div><strong>Availability:</strong> ${escapeHtml(service.availability ?? "N/A")}</div>
+                    </div>
+                `;
+
+                servicesBody.appendChild(card);
+            });
+
+            serviceStatus.textContent = "Services loaded successfully from database.";
+        } catch (error) {
+            console.error(error);
+            servicesBody.innerHTML = `<div class="empty-state">Error loading services: ${escapeHtml(error.message)}</div>`;
+            serviceStatus.textContent = "Error loading services.";
+            document.getElementById("serviceCount").textContent = "0";
+        }
     }
 
     function normalizeRole(role) {
@@ -669,43 +701,6 @@
         }
     }
 
-    async function createUser() {
-        const name = document.getElementById("name").value.trim();
-        const email = document.getElementById("email").value.trim();
-        const role = document.getElementById("role").value.trim();
-        const createMsg = document.getElementById("createMsg");
-
-        if (!name || !email || !role) {
-            createMsg.textContent = "Please complete all fields.";
-            return;
-        }
-
-        try {
-            const response = await fetch("/admin/users", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ name, email, role })
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to create user. Status " + response.status);
-            }
-
-            createMsg.textContent = "User created successfully.";
-
-            document.getElementById("name").value = "";
-            document.getElementById("email").value = "";
-            document.getElementById("role").value = "ADMIN";
-
-            loadUsers();
-        } catch (error) {
-            console.error(error);
-            createMsg.textContent = "Error: " + error.message;
-        }
-    }
-
     async function deleteUser(id) {
         const confirmed = confirm("Are you sure you want to delete user ID " + id + "?");
         if (!confirmed) return;
@@ -716,10 +711,12 @@
             });
 
             if (!response.ok) {
-                throw new Error("Failed to delete user. Status " + response.status);
+                const errorText = await response.text();
+                throw new Error(errorText || ("Failed to delete user. Status " + response.status));
             }
 
-            loadUsers();
+            alert("User deleted successfully.");
+            await loadUsers();
         } catch (error) {
             console.error(error);
             alert("Error deleting user: " + error.message);
@@ -727,6 +724,8 @@
     }
 
     loadUsers();
+    loadReviews();
+    loadServices();
 </script>
 </body>
 </html>
