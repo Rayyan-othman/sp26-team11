@@ -5,10 +5,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import autobid.autobid.dto.ReviewRequest;
-import autobid.autobid.entity.Customer;
 import autobid.autobid.entity.Review;
 import autobid.autobid.entity.ServiceEntity;
-import autobid.autobid.repository.CustomerRepository;
 import autobid.autobid.repository.ReviewRepository;
 import autobid.autobid.repository.ServiceRepository;
 
@@ -16,14 +14,10 @@ import autobid.autobid.repository.ServiceRepository;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
-    private final CustomerRepository customerRepository;
     private final ServiceRepository serviceRepository;
 
-    public ReviewService(ReviewRepository reviewRepository,
-                         CustomerRepository customerRepository,
-                         ServiceRepository serviceRepository) {
+    public ReviewService(ReviewRepository reviewRepository, ServiceRepository serviceRepository) {
         this.reviewRepository = reviewRepository;
-        this.customerRepository = customerRepository;
         this.serviceRepository = serviceRepository;
     }
 
@@ -31,19 +25,24 @@ public class ReviewService {
         return reviewRepository.findAll();
     }
 
-    public Review createReview(ReviewRequest request) {
-        Customer customer = customerRepository.findById(request.getCustomerId())
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+    public Review getReviewById(Long id) {
+        return reviewRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Review not found with id: " + id));
+    }
 
+    public Review createReview(ReviewRequest request) {
         ServiceEntity service = serviceRepository.findById(request.getServiceId())
-                .orElseThrow(() -> new RuntimeException("Service not found"));
+                .orElseThrow(() -> new RuntimeException("Service not found with id: " + request.getServiceId()));
 
         Review review = new Review();
-        review.setRating(request.getRating());
         review.setComment(request.getComment());
-        review.setCustomer(customer);
+        review.setRating(request.getRating());
         review.setService(service);
 
         return reviewRepository.save(review);
+    }
+
+    public void deleteReview(Long id) {
+        reviewRepository.deleteById(id);
     }
 }
