@@ -1,307 +1,725 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AutoBid | System Admin Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoBid | System Admin Dashboard</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-  <!-- Shared styles (if you already have it) -->
-  <link rel="stylesheet" href="../css/styles.css" />
-  <!-- Admin specific styles -->
-  <link rel="stylesheet" href="../css/admindashboard.css" />
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(180deg, #081223 0%, #0b1220 100%);
+            color: #e8edf7;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #0e1930 0%, #0a1324 100%);
+            border-right: 1px solid rgba(255,255,255,0.08);
+            padding: 24px 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+
+        .brand-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 24px;
+        }
+
+        .brand-text h1 {
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        .brand-text p {
+            font-size: 14px;
+            color: #a9b7d0;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: #d8e1f0;
+            padding: 14px 14px;
+            border-radius: 14px;
+            transition: 0.2s ease;
+            background: transparent;
+        }
+
+        .nav a.active,
+        .nav a:hover {
+            background: rgba(255,255,255,0.10);
+        }
+
+        .sidebar-footer {
+            margin-top: 24px;
+        }
+
+        .admin-box,
+        .logout-btn {
+            width: 100%;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.06);
+            color: #e8edf7;
+            padding: 16px;
+        }
+
+        .admin-box {
+            margin-bottom: 14px;
+        }
+
+        .admin-box .name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .admin-box .email {
+            color: #a9b7d0;
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .main {
+            flex: 1;
+            padding: 28px;
+        }
+
+        .page-title {
+            font-size: 34px;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: #b3c0d7;
+            margin-bottom: 28px;
+            font-size: 16px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 18px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+        }
+
+        .card-title {
+            color: #bfd0ea;
+            font-size: 15px;
+            margin-bottom: 14px;
+        }
+
+        .card-value {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .card-note {
+            color: #aebdd5;
+            font-size: 14px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 18px;
+            align-items: start;
+        }
+
+        .panel {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 22px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .panel-header h2 {
+            font-size: 18px;
+        }
+
+        .panel-header .small-link {
+            color: #d6e0ef;
+            font-size: 14px;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 16px 18px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            vertical-align: middle;
+        }
+
+        th {
+            color: #bcd0ea;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        td {
+            color: #eef3fb;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: bold;
+            background: rgba(255,255,255,0.10);
+        }
+
+        .role-admin {
+            background: rgba(220, 53, 69, 0.18);
+            color: #ffb8c0;
+        }
+
+        .role-provider {
+            background: rgba(25, 135, 84, 0.18);
+            color: #a8f0cc;
+        }
+
+        .role-customer {
+            background: rgba(255, 193, 7, 0.18);
+            color: #ffe493;
+        }
+
+        .rating-badge {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: bold;
+            background: rgba(255,255,255,0.10);
+            color: #ffe493;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 12px;
+            padding: 10px 14px;
+            cursor: pointer;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .btn-view {
+            background: #1f8bff;
+        }
+
+        .btn-delete {
+            background: #c84d59;
+        }
+
+        .right-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .panel-body {
+            padding: 20px 22px;
+        }
+
+        .service-card {
+            padding: 16px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 12px;
+        }
+
+        .service-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .service-meta {
+            color: #b7c6dc;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .empty-state {
+            padding: 26px 18px;
+            color: #b8c8de;
+        }
+
+        .footer-note {
+            padding: 16px 22px;
+            color: #aebcd2;
+            font-size: 14px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+
+        @media (max-width: 1200px) {
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 780px) {
+            .layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title {
+                font-size: 28px;
+            }
+        }
+    </style>
 </head>
-
 <body>
-  <div class="app">
-    <!-- SIDEBAR -->
+<div class="layout">
     <aside class="sidebar">
-      <div class="brand">
-        <div class="logo">AB</div>
-        <div class="brand-text">
-          <h1>AutoBid</h1>
-          <p>System Admin</p>
-        </div>
-      </div>
+        <div>
+            <div class="brand">
+                <div class="brand-icon">AB</div>
+                <div class="brand-text">
+                    <h1>AutoBid</h1>
+                    <p>System Admin</p>
+                </div>
+            </div>
 
-      <nav class="nav">
-        <a class="nav-item active" href="./admindashboard.html">Dashboard</a>
-        <a class="nav-item" href="#users">Users</a>
-        <a class="nav-item" href="#providers">Providers</a>
-        <a class="nav-item" href="#bookings">Bookings</a>
-        <a class="nav-item" href="#services">Services</a>
-        <a class="nav-item" href="#reports">Reports</a>
-        <a class="nav-item" href="#settings">Settings</a>
-      </nav>
-
-      <div class="sidebar-footer">
-        <div class="admin-card">
-          <div class="avatar">A</div>
-          <div class="admin-meta">
-            <div class="admin-name">Admin</div>
-            <div class="admin-email">admin@autobid.com</div>
-          </div>
+            <nav class="nav">
+                <a href="#" class="active">Dashboard</a>
+                <a href="#usersPanel">Users</a>
+                <a href="#reviewsPanel">Reviews</a>
+                <a href="#servicesPanel">Services</a>
+            </nav>
         </div>
 
-        <a class="logout" href="../index.html">Log out</a>
-      </div>
+        <div class="sidebar-footer">
+            <div class="admin-box">
+                <div class="name">Admin</div>
+                <div class="email">admin@autobid.com</div>
+            </div>
+            <button class="logout-btn" type="button" onclick="window.location.href='../index.html'">Log out</button>
+        </div>
     </aside>
 
-    <!-- MAIN -->
     <main class="main">
-      <!-- TOP BAR -->
-      <header class="topbar">
-        <div>
-          <h2>Dashboard</h2>
-          <p class="muted">Manage users, providers, and bookings at a glance.</p>
-        </div>
+        <h1 class="page-title">System Admin Dashboard</h1>
+        <p class="page-subtitle">Manage users, reviews, and services with real database data.</p>
 
-        <div class="topbar-actions">
-          <div class="search">
-            <input type="search" placeholder="Search users, bookings, providers..." />
-          </div>
-          <button class="btn btn-secondary" type="button">Export</button>
-          <button class="btn btn-primary" type="button">New Announcement</button>
-        </div>
-      </header>
+        <section class="cards">
+            <div class="card">
+                <div class="card-title">Total Users</div>
+                <div class="card-value" id="totalUsers">0</div>
+                <div class="card-note">Loaded from <code>/admin/users</code></div>
+            </div>
 
-      <!-- STATS -->
-      <section class="stats">
-        <article class="stat-card">
-          <div class="stat-title">Total Users</div>
-          <div class="stat-value">1,248</div>
-          <div class="stat-sub muted">+38 this week</div>
-        </article>
+            <div class="card">
+                <div class="card-title">Admins</div>
+                <div class="card-value" id="adminCount">0</div>
+                <div class="card-note">Users whose role is ADMIN</div>
+            </div>
 
-        <article class="stat-card">
-          <div class="stat-title">Active Providers</div>
-          <div class="stat-value">94</div>
-          <div class="stat-sub muted">12 pending verification</div>
-        </article>
+            <div class="card">
+                <div class="card-title">Total Reviews</div>
+                <div class="card-value" id="reviewCount">0</div>
+                <div class="card-note">Loaded from reviews endpoint</div>
+            </div>
 
-        <article class="stat-card">
-          <div class="stat-title">Bookings (30d)</div>
-          <div class="stat-value">312</div>
-          <div class="stat-sub muted">78 scheduled</div>
-        </article>
+            <div class="card">
+                <div class="card-title">Total Services</div>
+                <div class="card-value" id="serviceCount">0</div>
+                <div class="card-note">Loaded from services endpoint</div>
+            </div>
+        </section>
 
-        <article class="stat-card">
-          <div class="stat-title">Support Tickets</div>
-          <div class="stat-value">16</div>
-          <div class="stat-sub muted">4 urgent</div>
-        </article>
-      </section>
+        <section class="content-grid">
+            <div class="panel" id="usersPanel">
+                <div class="panel-header">
+                    <h2>User Management</h2>
+                    <div class="small-link" id="loadStatus">Loading users...</div>
+                </div>
 
-      <!-- GRID -->
-      <section class="grid">
-        <!-- LEFT: Pending Approvals -->
-        <div class="panel" id="providers">
-          <div class="panel-header">
-            <h3>Pending Provider Approvals</h3>
-            <a class="link" href="#providers">View all</a>
-          </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody id="userTableBody"></tbody>
+                    </table>
+                </div>
 
-          <div class="table-wrap">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Provider</th>
-                  <th>Service</th>
-                  <th>City</th>
-                  <th>Status</th>
-                  <th class="right">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <div class="cell-main">
-                      <div class="pill-avatar">J</div>
-                      <div>
-                        <div class="cell-title">Jordan Mobile Repairs</div>
-                        <div class="cell-sub">provider01@demo.com</div>
-                      </div>
+                <div class="footer-note">
+                    This section is loaded from the database. Delete removes the user through the backend.
+                </div>
+            </div>
+
+            <div class="right-stack">
+                <div class="panel" id="reviewsPanel">
+                    <div class="panel-header">
+                        <h2>Reviews</h2>
+                        <div class="small-link" id="reviewStatus">Loading reviews...</div>
                     </div>
-                  </td>
-                  <td>On-site Mechanic</td>
-                  <td>Greensboro</td>
-                  <td><span class="badge warn">Pending</span></td>
-                  <td class="right">
-                    <button class="btn-sm btn-ok" type="button">Approve</button>
-                    <button class="btn-sm btn-bad" type="button">Reject</button>
-                  </td>
-                </tr>
 
-                <tr>
-                  <td>
-                    <div class="cell-main">
-                      <div class="pill-avatar">M</div>
-                      <div>
-                        <div class="cell-title">Mina Detailing Co.</div>
-                        <div class="cell-sub">provider02@demo.com</div>
-                      </div>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Comment</th>
+                                <th>Rating</th>
+                            </tr>
+                            </thead>
+                            <tbody id="reviewTableBody"></tbody>
+                        </table>
                     </div>
-                  </td>
-                  <td>Mobile Detailing</td>
-                  <td>Raleigh</td>
-                  <td><span class="badge warn">Pending</span></td>
-                  <td class="right">
-                    <button class="btn-sm btn-ok" type="button">Approve</button>
-                    <button class="btn-sm btn-bad" type="button">Reject</button>
-                  </td>
-                </tr>
+                </div>
 
-                <tr>
-                  <td>
-                    <div class="cell-main">
-                      <div class="pill-avatar">S</div>
-                      <div>
-                        <div class="cell-title">SpeedFix Auto</div>
-                        <div class="cell-sub">provider03@demo.com</div>
-                      </div>
+                <div class="panel" id="servicesPanel">
+                    <div class="panel-header">
+                        <h2>Services</h2>
+                        <div class="small-link" id="serviceStatus">Loading services...</div>
                     </div>
-                  </td>
-                  <td>On-site Mechanic</td>
-                  <td>Charlotte</td>
-                  <td><span class="badge warn">Pending</span></td>
-                  <td class="right">
-                    <button class="btn-sm btn-ok" type="button">Approve</button>
-                    <button class="btn-sm btn-bad" type="button">Reject</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
 
-          <div class="panel-footer muted">
-            Tip: Approving a provider enables them to appear in Customer browse results.
-          </div>
-        </div>
-
-        <!-- RIGHT: Quick Actions + System Health -->
-        <div class="stack">
-          <div class="panel">
-            <div class="panel-header">
-              <h3>Quick Actions</h3>
+                    <div class="panel-body" id="servicesBody"></div>
+                </div>
             </div>
-            <div class="actions">
-              <button class="action-card" type="button">
-                <div class="action-title">Create Admin User</div>
-                <div class="action-sub muted">Add staff & assign roles</div>
-              </button>
-              <button class="action-card" type="button">
-                <div class="action-title">Suspend Account</div>
-                <div class="action-sub muted">For fraud/chargebacks</div>
-              </button>
-              <button class="action-card" type="button">
-                <div class="action-title">Post Announcement</div>
-                <div class="action-sub muted">Message all users</div>
-              </button>
-              <button class="action-card" type="button">
-                <div class="action-title">View Audit Log</div>
-                <div class="action-sub muted">Track admin actions</div>
-              </button>
-            </div>
-          </div>
-
-          <div class="panel" id="reports">
-            <div class="panel-header">
-              <h3>System Health</h3>
-              <a class="link" href="#reports">Details</a>
-            </div>
-
-            <div class="health">
-              <div class="health-row">
-                <div class="health-label">API Status</div>
-                <div class="health-value"><span class="dot ok"></span> Operational</div>
-              </div>
-              <div class="health-row">
-                <div class="health-label">Database</div>
-                <div class="health-value"><span class="dot ok"></span> Healthy</div>
-              </div>
-              <div class="health-row">
-                <div class="health-label">Payments</div>
-                <div class="health-value"><span class="dot warn"></span> Degraded</div>
-              </div>
-              <div class="health-row">
-                <div class="health-label">Last Backup</div>
-                <div class="health-value">Today, 02:10 AM</div>
-              </div>
-            </div>
-
-            <div class="panel-footer muted">
-              Note: “Degraded” means slower response time; transactions still succeed.
-            </div>
-          </div>
-        </div>
-
-        <!-- FULL WIDTH: Recent Bookings -->
-        <div class="panel wide" id="bookings">
-          <div class="panel-header">
-            <h3>Recent Bookings</h3>
-            <a class="link" href="#bookings">View all</a>
-          </div>
-
-          <div class="table-wrap">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Booking ID</th>
-                  <th>Customer</th>
-                  <th>Provider</th>
-                  <th>Service</th>
-                  <th>Date</th>
-                  <th>Status</th>
-                  <th class="right">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>#BK-10421</td>
-                  <td>Rayyan O.</td>
-                  <td>Mina Detailing Co.</td>
-                  <td>Detailing - Full</td>
-                  <td>Feb 18, 2026</td>
-                  <td><span class="badge ok">Scheduled</span></td>
-                  <td class="right">
-                    <button class="btn-sm" type="button">Open</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>#BK-10402</td>
-                  <td>Nick A.</td>
-                  <td>SpeedFix Auto</td>
-                  <td>Brake Inspection</td>
-                  <td>Feb 16, 2026</td>
-                  <td><span class="badge info">In Progress</span></td>
-                  <td class="right">
-                    <button class="btn-sm" type="button">Open</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>#BK-10388</td>
-                  <td>Omar H.</td>
-                  <td>Jordan Mobile Repairs</td>
-                  <td>Battery Replace</td>
-                  <td>Feb 14, 2026</td>
-                  <td><span class="badge gray">Completed</span></td>
-                  <td class="right">
-                    <button class="btn-sm" type="button">Open</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="panel-footer muted">
-            Admin actions are logged in the Audit Log for accountability.
-          </div>
-        </div>
-      </section>
-
-      <footer class="footer muted">
-        © 2026 AutoBid • System Admin Panel
-      </footer>
+        </section>
     </main>
-  </div>
+</div>
+
+<script>
+    async function loadUsers() {
+        const tableBody = document.getElementById("userTableBody");
+        const loadStatus = document.getElementById("loadStatus");
+
+        tableBody.innerHTML = "";
+        loadStatus.textContent = "Loading users...";
+
+        try {
+            const response = await fetch("/admin/users");
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch users. Status " + response.status);
+            }
+
+            const users = await response.json();
+
+            updateUserStats(users);
+
+            if (!users || users.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="empty-state">No users found in the database.</td>
+                    </tr>
+                `;
+                loadStatus.textContent = "No users found.";
+                return;
+            }
+
+            users.forEach(user => {
+                const row = document.createElement("tr");
+
+                row.innerHTML = `
+                    <td>${user.id ?? ""}</td>
+                    <td>${escapeHtml(user.name ?? "")}</td>
+                    <td>${escapeHtml(user.email ?? "")}</td>
+                    <td>${renderRoleBadge(user.role)}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-view" type="button" onclick="viewUser(${user.id})">View</button>
+                            <button class="btn btn-delete" type="button" onclick="deleteUser(${user.id})">Delete</button>
+                        </div>
+                    </td>
+                `;
+
+                tableBody.appendChild(row);
+            });
+
+            loadStatus.textContent = "Users loaded successfully from database.";
+        } catch (error) {
+            console.error(error);
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="empty-state">Error loading users: ${escapeHtml(error.message)}</td>
+                </tr>
+            `;
+            loadStatus.textContent = "Error loading users.";
+            updateUserStats([]);
+        }
+    }
+
+    function updateUserStats(users) {
+        const totalUsers = users.length;
+        const adminCount = users.filter(user => normalizeRole(user.role) === "ADMIN").length;
+
+        document.getElementById("totalUsers").textContent = totalUsers;
+        document.getElementById("adminCount").textContent = adminCount;
+    }
+
+    async function loadReviews() {
+        const reviewTableBody = document.getElementById("reviewTableBody");
+        const reviewStatus = document.getElementById("reviewStatus");
+
+        reviewTableBody.innerHTML = "";
+        reviewStatus.textContent = "Loading reviews...";
+
+        try {
+            const response = await fetch("/reviews");
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch reviews. Status " + response.status);
+            }
+
+            const reviews = await response.json();
+
+            document.getElementById("reviewCount").textContent = reviews.length;
+
+            if (!reviews || reviews.length === 0) {
+                reviewTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="3" class="empty-state">No reviews found in the database.</td>
+                    </tr>
+                `;
+                reviewStatus.textContent = "No reviews found.";
+                return;
+            }
+
+            reviews.forEach(review => {
+                const row = document.createElement("tr");
+
+                row.innerHTML = `
+                    <td>${review.id ?? ""}</td>
+                    <td>${escapeHtml(review.comment ?? "")}</td>
+                    <td><span class="rating-badge">${review.rating ?? ""}</span></td>
+                `;
+
+                reviewTableBody.appendChild(row);
+            });
+
+            reviewStatus.textContent = "Reviews loaded successfully from database.";
+        } catch (error) {
+            console.error(error);
+            reviewTableBody.innerHTML = `
+                <tr>
+                    <td colspan="3" class="empty-state">Error loading reviews: ${escapeHtml(error.message)}</td>
+                </tr>
+            `;
+            reviewStatus.textContent = "Error loading reviews.";
+            document.getElementById("reviewCount").textContent = "0";
+        }
+    }
+
+    async function loadServices() {
+        const servicesBody = document.getElementById("servicesBody");
+        const serviceStatus = document.getElementById("serviceStatus");
+
+        servicesBody.innerHTML = "";
+        serviceStatus.textContent = "Loading services...";
+
+        try {
+            const response = await fetch("/services");
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch services. Status " + response.status);
+            }
+
+            const services = await response.json();
+
+            document.getElementById("serviceCount").textContent = services.length;
+
+            if (!services || services.length === 0) {
+                servicesBody.innerHTML = `<div class="empty-state">No services found in the database.</div>`;
+                serviceStatus.textContent = "No services found.";
+                return;
+            }
+
+            services.forEach(service => {
+                const card = document.createElement("div");
+                card.className = "service-card";
+
+                card.innerHTML = `
+                    <div class="service-title">${escapeHtml(service.title ?? "Untitled Service")}</div>
+                    <div class="service-meta">
+                        <div><strong>Description:</strong> ${escapeHtml(service.description ?? "N/A")}</div>
+                        <div><strong>Category:</strong> ${escapeHtml(service.category ?? "N/A")}</div>
+                        <div><strong>Price:</strong> ${service.price ?? "N/A"}</div>
+                        <div><strong>Availability:</strong> ${escapeHtml(service.availability ?? "N/A")}</div>
+                    </div>
+                `;
+
+                servicesBody.appendChild(card);
+            });
+
+            serviceStatus.textContent = "Services loaded successfully from database.";
+        } catch (error) {
+            console.error(error);
+            servicesBody.innerHTML = `<div class="empty-state">Error loading services: ${escapeHtml(error.message)}</div>`;
+            serviceStatus.textContent = "Error loading services.";
+            document.getElementById("serviceCount").textContent = "0";
+        }
+    }
+
+    function normalizeRole(role) {
+        return String(role ?? "").trim().toUpperCase();
+    }
+
+    function renderRoleBadge(role) {
+        const normalized = normalizeRole(role);
+
+        if (normalized === "ADMIN") {
+            return `<span class="role-badge role-admin">ADMIN</span>`;
+        }
+
+        if (normalized === "PROVIDER") {
+            return `<span class="role-badge role-provider">PROVIDER</span>`;
+        }
+
+        if (normalized === "CUSTOMER") {
+            return `<span class="role-badge role-customer">CUSTOMER</span>`;
+        }
+
+        return `<span class="role-badge">${escapeHtml(normalized || "UNKNOWN")}</span>`;
+    }
+
+    function escapeHtml(value) {
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#39;");
+    }
+
+    async function viewUser(id) {
+        try {
+            const response = await fetch(`/admin/users/${id}`);
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch user details.");
+            }
+
+            const user = await response.json();
+
+            alert(
+                "User Details\n\n" +
+                "ID: " + (user.id ?? "") + "\n" +
+                "Name: " + (user.name ?? "") + "\n" +
+                "Email: " + (user.email ?? "") + "\n" +
+                "Role: " + (user.role ?? "")
+            );
+        } catch (error) {
+            alert("Error: " + error.message);
+        }
+    }
+
+    async function deleteUser(id) {
+        const confirmed = confirm("Are you sure you want to delete user ID " + id + "?");
+        if (!confirmed) return;
+
+        try {
+            const response = await fetch(`/admin/users/${id}`, {
+                method: "DELETE"
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || ("Failed to delete user. Status " + response.status));
+            }
+
+            alert("User deleted successfully.");
+            await loadUsers();
+        } catch (error) {
+            console.error(error);
+            alert("Error deleting user: " + error.message);
+        }
+    }
+
+    loadUsers();
+    loadReviews();
+    loadServices();
+</script>
 </body>
 </html>
