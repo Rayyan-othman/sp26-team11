@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AutoBid | System Admin Dashboard</title>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
@@ -70,7 +74,7 @@
         .nav a {
             text-decoration: none;
             color: #d8e1f0;
-            padding: 14px 14px;
+            padding: 14px;
             border-radius: 14px;
             transition: 0.2s ease;
             background: transparent;
@@ -321,6 +325,12 @@
             border-top: 1px solid rgba(255,255,255,0.08);
         }
 
+        .debug-note {
+            margin-top: 10px;
+            color: #9fb4d3;
+            font-size: 13px;
+        }
+
         @media (max-width: 1200px) {
             .cards {
                 grid-template-columns: repeat(2, 1fr);
@@ -399,13 +409,13 @@
             <div class="card">
                 <div class="card-title">Total Reviews</div>
                 <div class="card-value" id="reviewCount">0</div>
-                <div class="card-note">Loaded from reviews endpoint</div>
+                <div class="card-note">Loaded from <code>/api/reviews</code></div>
             </div>
 
             <div class="card">
                 <div class="card-title">Total Services</div>
                 <div class="card-value" id="serviceCount">0</div>
-                <div class="card-note">Loaded from services endpoint</div>
+                <div class="card-note">Loaded from <code>/api/services</code></div>
             </div>
         </section>
 
@@ -455,6 +465,9 @@
                             <tbody id="reviewTableBody"></tbody>
                         </table>
                     </div>
+                    <div class="footer-note">
+                        Reviews are fetched from <code>/api/reviews</code>.
+                    </div>
                 </div>
 
                 <div class="panel" id="servicesPanel">
@@ -464,6 +477,9 @@
                     </div>
 
                     <div class="panel-body" id="servicesBody"></div>
+                    <div class="footer-note">
+                        Services are fetched from <code>/api/services</code>.
+                    </div>
                 </div>
             </div>
         </section>
@@ -471,175 +487,13 @@
 </div>
 
 <script>
-    async function loadUsers() {
-        const tableBody = document.getElementById("userTableBody");
-        const loadStatus = document.getElementById("loadStatus");
-
-        tableBody.innerHTML = "";
-        loadStatus.textContent = "Loading users...";
-
-        try {
-            const response = await fetch("/admin/users");
-
-            if (!response.ok) {
-                throw new Error("Failed to fetch users. Status " + response.status);
-            }
-
-            const users = await response.json();
-
-            updateUserStats(users);
-
-            if (!users || users.length === 0) {
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="5" class="empty-state">No users found in the database.</td>
-                    </tr>
-                `;
-                loadStatus.textContent = "No users found.";
-                return;
-            }
-
-            users.forEach(user => {
-                const row = document.createElement("tr");
-
-                row.innerHTML = `
-                    <td>${user.id ?? ""}</td>
-                    <td>${escapeHtml(user.name ?? "")}</td>
-                    <td>${escapeHtml(user.email ?? "")}</td>
-                    <td>${renderRoleBadge(user.role)}</td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="btn btn-view" type="button" onclick="viewUser(${user.id})">View</button>
-                            <button class="btn btn-delete" type="button" onclick="deleteUser(${user.id})">Delete</button>
-                        </div>
-                    </td>
-                `;
-
-                tableBody.appendChild(row);
-            });
-
-            loadStatus.textContent = "Users loaded successfully from database.";
-        } catch (error) {
-            console.error(error);
-            tableBody.innerHTML = `
-                <tr>
-                    <td colspan="5" class="empty-state">Error loading users: ${escapeHtml(error.message)}</td>
-                </tr>
-            `;
-            loadStatus.textContent = "Error loading users.";
-            updateUserStats([]);
-        }
-    }
-
-    function updateUserStats(users) {
-        const totalUsers = users.length;
-        const adminCount = users.filter(user => normalizeRole(user.role) === "ADMIN").length;
-
-        document.getElementById("totalUsers").textContent = totalUsers;
-        document.getElementById("adminCount").textContent = adminCount;
-    }
-
-    async function loadReviews() {
-        const reviewTableBody = document.getElementById("reviewTableBody");
-        const reviewStatus = document.getElementById("reviewStatus");
-
-        reviewTableBody.innerHTML = "";
-        reviewStatus.textContent = "Loading reviews...";
-
-        try {
-            const response = await fetch("/reviews");
-
-            if (!response.ok) {
-                throw new Error("Failed to fetch reviews. Status " + response.status);
-            }
-
-            const reviews = await response.json();
-
-            document.getElementById("reviewCount").textContent = reviews.length;
-
-            if (!reviews || reviews.length === 0) {
-                reviewTableBody.innerHTML = `
-                    <tr>
-                        <td colspan="3" class="empty-state">No reviews found in the database.</td>
-                    </tr>
-                `;
-                reviewStatus.textContent = "No reviews found.";
-                return;
-            }
-
-            reviews.forEach(review => {
-                const row = document.createElement("tr");
-
-                row.innerHTML = `
-                    <td>${review.id ?? ""}</td>
-                    <td>${escapeHtml(review.comment ?? "")}</td>
-                    <td><span class="rating-badge">${review.rating ?? ""}</span></td>
-                `;
-
-                reviewTableBody.appendChild(row);
-            });
-
-            reviewStatus.textContent = "Reviews loaded successfully from database.";
-        } catch (error) {
-            console.error(error);
-            reviewTableBody.innerHTML = `
-                <tr>
-                    <td colspan="3" class="empty-state">Error loading reviews: ${escapeHtml(error.message)}</td>
-                </tr>
-            `;
-            reviewStatus.textContent = "Error loading reviews.";
-            document.getElementById("reviewCount").textContent = "0";
-        }
-    }
-
-    async function loadServices() {
-        const servicesBody = document.getElementById("servicesBody");
-        const serviceStatus = document.getElementById("serviceStatus");
-
-        servicesBody.innerHTML = "";
-        serviceStatus.textContent = "Loading services...";
-
-        try {
-            const response = await fetch("/services");
-
-            if (!response.ok) {
-                throw new Error("Failed to fetch services. Status " + response.status);
-            }
-
-            const services = await response.json();
-
-            document.getElementById("serviceCount").textContent = services.length;
-
-            if (!services || services.length === 0) {
-                servicesBody.innerHTML = `<div class="empty-state">No services found in the database.</div>`;
-                serviceStatus.textContent = "No services found.";
-                return;
-            }
-
-            services.forEach(service => {
-                const card = document.createElement("div");
-                card.className = "service-card";
-
-                card.innerHTML = `
-                    <div class="service-title">${escapeHtml(service.title ?? "Untitled Service")}</div>
-                    <div class="service-meta">
-                        <div><strong>Description:</strong> ${escapeHtml(service.description ?? "N/A")}</div>
-                        <div><strong>Category:</strong> ${escapeHtml(service.category ?? "N/A")}</div>
-                        <div><strong>Price:</strong> ${service.price ?? "N/A"}</div>
-                        <div><strong>Availability:</strong> ${escapeHtml(service.availability ?? "N/A")}</div>
-                    </div>
-                `;
-
-                servicesBody.appendChild(card);
-            });
-
-            serviceStatus.textContent = "Services loaded successfully from database.";
-        } catch (error) {
-            console.error(error);
-            servicesBody.innerHTML = `<div class="empty-state">Error loading services: ${escapeHtml(error.message)}</div>`;
-            serviceStatus.textContent = "Error loading services.";
-            document.getElementById("serviceCount").textContent = "0";
-        }
+    function escapeHtml(value) {
+        return String(value ?? "")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#39;");
     }
 
     function normalizeRole(role) {
@@ -652,11 +506,9 @@
         if (normalized === "ADMIN") {
             return `<span class="role-badge role-admin">ADMIN</span>`;
         }
-
         if (normalized === "PROVIDER") {
             return `<span class="role-badge role-provider">PROVIDER</span>`;
         }
-
         if (normalized === "CUSTOMER") {
             return `<span class="role-badge role-customer">CUSTOMER</span>`;
         }
@@ -664,18 +516,185 @@
         return `<span class="role-badge">${escapeHtml(normalized || "UNKNOWN")}</span>`;
     }
 
-    function escapeHtml(value) {
-        return String(value)
-            .replaceAll("&", "&amp;")
-            .replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;")
-            .replaceAll('"', "&quot;")
-            .replaceAll("'", "&#39;");
+    function setEmptyRow(tbodyId, colCount, message) {
+        const tbody = document.getElementById(tbodyId);
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="${colCount}" class="empty-state">${escapeHtml(message)}</td>
+            </tr>
+        `;
+    }
+
+    async function loadUsers() {
+        const tableBody = document.getElementById("userTableBody");
+        const loadStatus = document.getElementById("loadStatus");
+
+        tableBody.innerHTML = "";
+        loadStatus.textContent = "Loading users...";
+
+        try {
+            const response = await fetch("/admin/users", {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch users. Status " + response.status);
+            }
+
+            const users = await response.json();
+            updateUserStats(users);
+
+            if (!Array.isArray(users) || users.length === 0) {
+                setEmptyRow("userTableBody", 5, "No users found in the database.");
+                loadStatus.textContent = "No users found.";
+                return;
+            }
+
+            users.forEach(user => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${user.id ?? ""}</td>
+                    <td>${escapeHtml(user.name)}</td>
+                    <td>${escapeHtml(user.email)}</td>
+                    <td>${renderRoleBadge(user.role)}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-view" type="button" onclick="viewUser(${user.id})">View</button>
+                            <button class="btn btn-delete" type="button" onclick="deleteUser(${user.id})">Delete</button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            loadStatus.textContent = "Users loaded successfully from database.";
+        } catch (error) {
+            console.error("Users fetch error:", error);
+            setEmptyRow("userTableBody", 5, "Error loading users: " + error.message);
+            loadStatus.textContent = "Error loading users.";
+            updateUserStats([]);
+        }
+    }
+
+    function updateUserStats(users) {
+        const safeUsers = Array.isArray(users) ? users : [];
+        const totalUsers = safeUsers.length;
+        const adminCount = safeUsers.filter(user => normalizeRole(user.role) === "ADMIN").length;
+
+        document.getElementById("totalUsers").textContent = totalUsers;
+        document.getElementById("adminCount").textContent = adminCount;
+    }
+
+    async function loadReviews() {
+        const reviewStatus = document.getElementById("reviewStatus");
+        reviewStatus.textContent = "Loading reviews...";
+
+        try {
+            const response = await fetch("/api/reviews", {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch reviews. Status " + response.status);
+            }
+
+            const reviews = await response.json();
+            document.getElementById("reviewCount").textContent = Array.isArray(reviews) ? reviews.length : 0;
+
+            if (!Array.isArray(reviews) || reviews.length === 0) {
+                setEmptyRow("reviewTableBody", 3, "No reviews found in the database.");
+                reviewStatus.textContent = "No reviews found.";
+                return;
+            }
+
+            const reviewTableBody = document.getElementById("reviewTableBody");
+            reviewTableBody.innerHTML = "";
+
+            reviews.forEach(review => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${review.id ?? ""}</td>
+                    <td>${escapeHtml(review.comment)}</td>
+                    <td><span class="rating-badge">${review.rating ?? ""}</span></td>
+                `;
+                reviewTableBody.appendChild(row);
+            });
+
+            reviewStatus.textContent = "Reviews loaded successfully from database.";
+        } catch (error) {
+            console.error("Reviews fetch error:", error);
+            document.getElementById("reviewCount").textContent = "0";
+            setEmptyRow("reviewTableBody", 3, "Error loading reviews: " + error.message);
+            reviewStatus.textContent = "Error loading reviews.";
+        }
+    }
+
+    async function loadServices() {
+        const servicesBody = document.getElementById("servicesBody");
+        const serviceStatus = document.getElementById("serviceStatus");
+
+        servicesBody.innerHTML = "";
+        serviceStatus.textContent = "Loading services...";
+
+        try {
+            const response = await fetch("/api/services", {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch services. Status " + response.status);
+            }
+
+            const services = await response.json();
+            document.getElementById("serviceCount").textContent = Array.isArray(services) ? services.length : 0;
+
+            if (!Array.isArray(services) || services.length === 0) {
+                servicesBody.innerHTML = `<div class="empty-state">No services found in the database.</div>`;
+                serviceStatus.textContent = "No services found.";
+                return;
+            }
+
+            services.forEach(service => {
+                const card = document.createElement("div");
+                card.className = "service-card";
+                card.innerHTML = `
+                    <div class="service-title">${escapeHtml(service.title || "Untitled Service")}</div>
+                    <div class="service-meta">
+                        <div><strong>Description:</strong> ${escapeHtml(service.description || "N/A")}</div>
+                        <div><strong>Category:</strong> ${escapeHtml(service.category || "N/A")}</div>
+                        <div><strong>Price:</strong> ${service.price ?? "N/A"}</div>
+                        <div><strong>Availability:</strong> ${escapeHtml(service.availability || "N/A")}</div>
+                    </div>
+                `;
+                servicesBody.appendChild(card);
+            });
+
+            serviceStatus.textContent = "Services loaded successfully from database.";
+        } catch (error) {
+            console.error("Services fetch error:", error);
+            document.getElementById("serviceCount").textContent = "0";
+            servicesBody.innerHTML = `<div class="empty-state">Error loading services: ${escapeHtml(error.message)}</div>`;
+            serviceStatus.textContent = "Error loading services.";
+        }
     }
 
     async function viewUser(id) {
         try {
-            const response = await fetch(`/admin/users/${id}`);
+            const response = await fetch(`/admin/users/${id}`, {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
 
             if (!response.ok) {
                 throw new Error("Failed to fetch user details.");
@@ -701,7 +720,10 @@
 
         try {
             const response = await fetch(`/admin/users/${id}`, {
-                method: "DELETE"
+                method: "DELETE",
+                headers: {
+                    "Accept": "application/json, text/plain, */*"
+                }
             });
 
             if (!response.ok) {
@@ -712,14 +734,16 @@
             alert("User deleted successfully.");
             await loadUsers();
         } catch (error) {
-            console.error(error);
+            console.error("Delete user error:", error);
             alert("Error deleting user: " + error.message);
         }
     }
 
-    loadUsers();
-    loadReviews();
-    loadServices();
+    document.addEventListener("DOMContentLoaded", async function () {
+        await loadUsers();
+        await loadReviews();
+        await loadServices();
+    });
 </script>
 </body>
 </html>

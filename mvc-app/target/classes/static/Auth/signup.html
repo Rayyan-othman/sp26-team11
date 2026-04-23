@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en" class="h-100">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Sign Up — AutoBid</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/styles.css"/>
+</head>
+
+<body class="d-flex h-100 text-center text-white">
+  <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+
+    <!-- HEADER -->
+    <header class="mb-auto">
+      <div>
+        <h3 class="float-md-start mb-0 fw-bold">AutoBid</h3>
+        <nav class="nav nav-masthead justify-content-center float-md-end">
+          <a class="nav-link" href="../index.html">Home</a>
+          <a class="nav-link" href="./login.html">Login</a>
+          <a class="nav-link active" href="./signup.html">Sign Up</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="px-3">
+      <div class="glass p-4 text-start">
+
+        <h1 class="h3 fw-bold mb-1">Create Account</h1>
+        <p class="small opacity-75 mb-3">
+          Prototype only — account stored in your browser.
+        </p>
+
+        <div id="msg" class="small mb-3" style="display:none;"></div>
+
+        <!-- ROLE -->
+        <div class="mb-3">
+          <label class="form-label small opacity-75">Role</label>
+          <select id="role" class="form-select">
+            <option value="customer">Customer</option>
+            <option value="provider">Provider</option>
+            <option value="admin">System Admin</option>
+          </select>
+        </div>
+
+        <!-- NAME -->
+        <div class="mb-3">
+          <label class="form-label small opacity-75">Name</label>
+          <input id="name" class="form-control" placeholder="Your full name">
+        </div>
+
+        <!-- EMAIL -->
+        <div class="mb-3">
+          <label class="form-label small opacity-75">Email</label>
+          <input id="email" class="form-control" placeholder="name@email.com">
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="mb-3">
+          <label class="form-label small opacity-75">Password</label>
+          <input id="password" type="password" class="form-control" placeholder="Create a password">
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+          <a class="btn btn-light" href="./login.html">Back to login</a>
+          <button class="btn btn-accent" onclick="signup()">Create Account</button>
+        </div>
+
+      </div>
+    </main>
+
+    <footer class="mt-auto text-white-50">
+      <p class="mb-0 small">AutoBid • UI-only prototype</p>
+    </footer>
+  </div>
+
+<!-- SCRIPT -->
+<script>
+
+  // -------------------------------
+  // PRELOAD DEMO USERS (only once)
+  // -------------------------------
+  function seedDemoUsersIfNeeded(){
+    const existing = JSON.parse(localStorage.getItem("users") || "[]");
+    if(existing.length > 0) return;
+
+    const demoUsers = [
+      { name:"John Carter", email:"customer@demo.com", password:"123456", role:"customer" },
+      { name:"Sarah Williams", email:"sarah@demo.com", password:"123456", role:"customer" },
+      { name:"Mike Auto Service", email:"provider@demo.com", password:"123456", role:"provider" },
+      { name:"Elite Mobile Mechanics", email:"elite@demo.com", password:"123456", role:"provider" },
+      { name:"System Administrator", email:"admin@demo.com", password:"admin123", role:"admin" }
+    ];
+
+    localStorage.setItem("users", JSON.stringify(demoUsers));
+  }
+
+  seedDemoUsersIfNeeded();
+
+
+  // -------------------------------
+  // SHOW MESSAGE
+  // -------------------------------
+  function showMsg(text, ok=true){
+    const el = document.getElementById("msg");
+    el.style.display = "block";
+    el.style.color = ok ? "rgba(255,255,255,0.85)" : "#ffb4b4";
+    el.textContent = text;
+  }
+
+
+  // -------------------------------
+  // EMAIL VALIDATION
+  // -------------------------------
+  function isValidEmail(email){
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+
+  // -------------------------------
+  // SIGNUP FUNCTION
+  // -------------------------------
+  function signup(){
+
+    const role = document.getElementById("role").value;
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim().toLowerCase();
+    const password = document.getElementById("password").value;
+
+    if(!name || !email || !password){
+      showMsg("Please fill out name, email, and password.", false);
+      return;
+    }
+
+    if(!isValidEmail(email)){
+      showMsg("Please enter a valid email address.", false);
+      return;
+    }
+
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
+
+    // prevent duplicate emails
+    if(users.some(u => u.email === email)){
+      showMsg("That email is already registered. Try logging in.", false);
+      return;
+    }
+
+    // save user
+    users.push({ name, email, password, role });
+    localStorage.setItem("users", JSON.stringify(users));
+
+    // optional: remember email for login autofill
+    localStorage.setItem("lastSignupEmail", email);
+
+    showMsg("Account created! Redirecting to Home...", true);
+
+    // go back to home page
+    setTimeout(() => {
+      location.href = "../index.html";
+    }, 900);
+  }
+
+</script>
+</body>
+</html>
