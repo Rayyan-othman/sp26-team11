@@ -28,7 +28,7 @@
 
         <h1 class="h3 fw-bold mb-1">Create Account</h1>
         <p class="small opacity-75 mb-3">
-          Account will be saved to the Neon database.
+          Account will be saved to Neon database.
         </p>
 
         <div id="msg" class="small mb-3" style="display:none;"></div>
@@ -76,7 +76,7 @@
   function showMsg(text, ok = true) {
     const el = document.getElementById("msg");
     el.style.display = "block";
-    el.style.color = ok ? "rgba(255,255,255,0.85)" : "#ffb4b4";
+    el.style.color = ok ? "rgba(255,255,255,0.85)" : "#ff4d4d";
     el.textContent = text;
   }
 
@@ -85,27 +85,28 @@
   }
 
   async function signup() {
-    const role = document.getElementById("role").value;
+    const role = document.getElementById("role").value.toUpperCase();
     const name = document.getElementById("name").value.trim();
     const email = document.getElementById("email").value.trim().toLowerCase();
     const password = document.getElementById("password").value;
 
     if (!name || !email || !password) {
-      showMsg("Please fill out name, email, and password.", false);
+      showMsg("Fill all fields.", false);
       return;
     }
 
     if (!isValidEmail(email)) {
-      showMsg("Please enter a valid email address.", false);
+      showMsg("Invalid email format.", false);
       return;
     }
 
     try {
+      console.log("Sending signup to backend...");
+
       const response = await fetch(`${API_BASE}/admin/users`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json, text/plain, */*"
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           name: name,
@@ -118,19 +119,20 @@
 
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(errorText || "Failed to create account.");
+        throw new Error(errorText);
       }
 
-      localStorage.setItem("lastSignupEmail", email);
+      console.log("User created in Neon");
 
-      showMsg("Account created in Neon database! Redirecting to login...", true);
+      showMsg("✅ Account created successfully!", true);
 
       setTimeout(() => {
-        location.href = "./login.html";
-      }, 900);
+        window.location.href = "./login.html";
+      }, 800);
 
     } catch (error) {
-      showMsg("Error: " + error.message, false);
+      console.error(error);
+      showMsg("❌ " + error.message, false);
     }
   }
 </script>
