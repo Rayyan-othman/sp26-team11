@@ -28,8 +28,21 @@ public class AdminController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        return ResponseEntity.ok(adminService.createUser(user));
+    public ResponseEntity<?> createUser(@RequestBody User user) {
+        try {
+            return ResponseEntity.ok(adminService.createUser(user));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Create user failed: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody User loginRequest) {
+        try {
+            return ResponseEntity.ok(adminService.login(loginRequest));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Login failed: " + e.getMessage());
+        }
     }
 
     @GetMapping("/users")
@@ -43,8 +56,12 @@ public class AdminController {
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
-        return ResponseEntity.ok(adminService.updateUser(id, updatedUser));
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
+        try {
+            return ResponseEntity.ok(adminService.updateUser(id, updatedUser));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Update failed: " + e.getMessage());
+        }
     }
 
     @DeleteMapping("/users/{id}")

@@ -1,12 +1,11 @@
 package autobid.autobid.service;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import autobid.autobid.entity.User;
 import autobid.autobid.repository.ServiceRepository;
 import autobid.autobid.repository.UserRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AdminService {
@@ -20,7 +19,35 @@ public class AdminService {
     }
 
     public User createUser(User user) {
+        if (userRepository.existsByEmailIgnoreCase(user.getEmail())) {
+            throw new RuntimeException("Email already exists.");
+        }
+
+        if (user.getAccountStatus() == null || user.getAccountStatus().isBlank()) {
+            user.setAccountStatus("ACTIVE");
+        }
+
+        if (user.getRole() != null) {
+            user.setRole(user.getRole().toUpperCase());
+        }
+
         return userRepository.save(user);
+    }
+
+    public User login(User loginRequest) {
+        User user = userRepository.findByEmailIgnoreCase(loginRequest.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found."));
+
+        if (user.getPassword() == null || !user.getPassword().equals(loginRequest.getPassword())) {
+            throw new RuntimeException("Invalid password.");
+        }
+
+        if (loginRequest.getRole() != null &&
+                !user.getRole().equalsIgnoreCase(loginRequest.getRole())) {
+            throw new RuntimeException("Invalid role.");
+        }
+
+        return user;
     }
 
     public List<User> getAllUsers() {
@@ -33,26 +60,32 @@ public class AdminService {
     }
 
     public User updateUser(Long id, User updatedUser) {
-        User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        User existingUser = getUserById(id);
 
         existingUser.setName(updatedUser.getName());
         existingUser.setEmail(updatedUser.getEmail());
         existingUser.setRole(updatedUser.getRole());
 
+        if (updatedUser.getPassword() != null && !updatedUser.getPassword().isBlank()) {
+            existingUser.setPassword(updatedUser.getPassword());
+        }
+
+        if (updatedUser.getAccountStatus() != null) {
+            existingUser.setAccountStatus(updatedUser.getAccountStatus());
+        }
+
         return userRepository.save(existingUser);
     }
 
-   public void deleteUser(Long id) {
-    User existingUser = userRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+    public void deleteUser(Long id) {
+        User existingUser = getUserById(id);
 
-    boolean hasServices = serviceRepository.existsByProviderId(id);
+        boolean hasServices = serviceRepository.existsByProviderId(id);
 
-    if (hasServices) {
-        throw new RuntimeException("Cannot delete this user because they still own services.");
+        if (hasServices) {
+            throw new RuntimeException("Cannot delete this user because they still own services.");
+        }
+
+        userRepository.delete(existingUser);
     }
-
-    userRepository.delete(existingUser);
-}
 }
