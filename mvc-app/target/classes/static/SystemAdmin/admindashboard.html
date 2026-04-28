@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AutoBid | System Admin Dashboard</title>
+
     <style>
         * {
             box-sizing: border-box;
@@ -77,16 +78,11 @@
             padding: 14px;
             border-radius: 14px;
             transition: 0.2s ease;
-            background: transparent;
         }
 
         .nav a.active,
         .nav a:hover {
             background: rgba(255,255,255,0.10);
-        }
-
-        .sidebar-footer {
-            margin-top: 24px;
         }
 
         .admin-box,
@@ -194,7 +190,7 @@
             font-size: 18px;
         }
 
-        .panel-header .small-link {
+        .small-link {
             color: #d6e0ef;
             font-size: 14px;
         }
@@ -225,7 +221,9 @@
             color: #eef3fb;
         }
 
-        .role-badge {
+        .role-badge,
+        .rating-badge,
+        .status-badge {
             display: inline-block;
             padding: 8px 12px;
             border-radius: 999px;
@@ -250,12 +248,6 @@
         }
 
         .rating-badge {
-            display: inline-block;
-            padding: 8px 12px;
-            border-radius: 999px;
-            font-size: 13px;
-            font-weight: bold;
-            background: rgba(255,255,255,0.10);
             color: #ffe493;
         }
 
@@ -325,10 +317,8 @@
             border-top: 1px solid rgba(255,255,255,0.08);
         }
 
-        .debug-note {
-            margin-top: 10px;
-            color: #9fb4d3;
-            font-size: 13px;
+        code {
+            color: #d6e0ef;
         }
 
         @media (max-width: 1200px) {
@@ -360,8 +350,10 @@
         }
     </style>
 </head>
+
 <body>
 <div class="layout">
+
     <aside class="sidebar">
         <div>
             <div class="brand">
@@ -385,13 +377,13 @@
                 <div class="name">Admin</div>
                 <div class="email">admin@autobid.com</div>
             </div>
-            <button class="logout-btn" type="button" onclick="window.location.href='../index.html'">Log out</button>
+            <button class="logout-btn" type="button" onclick="logout()">Log out</button>
         </div>
     </aside>
 
     <main class="main">
         <h1 class="page-title">System Admin Dashboard</h1>
-        <p class="page-subtitle">Manage users, reviews, and services with real database data.</p>
+        <p class="page-subtitle">Manage users, reviews, and services with live Neon database data.</p>
 
         <section class="cards">
             <div class="card">
@@ -420,6 +412,7 @@
         </section>
 
         <section class="content-grid">
+
             <div class="panel" id="usersPanel">
                 <div class="panel-header">
                     <h2>User Management</h2>
@@ -434,6 +427,7 @@
                             <th>Name</th>
                             <th>Email</th>
                             <th>Role</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
@@ -442,11 +436,12 @@
                 </div>
 
                 <div class="footer-note">
-                    This section is loaded from the database. Delete removes the user through the backend.
+                    Users are loaded from Neon. Delete removes the user through the backend.
                 </div>
             </div>
 
             <div class="right-stack">
+
                 <div class="panel" id="reviewsPanel">
                     <div class="panel-header">
                         <h2>Reviews</h2>
@@ -460,11 +455,13 @@
                                 <th>ID</th>
                                 <th>Comment</th>
                                 <th>Rating</th>
+                                <th>Actions</th>
                             </tr>
                             </thead>
                             <tbody id="reviewTableBody"></tbody>
                         </table>
                     </div>
+
                     <div class="footer-note">
                         Reviews are fetched from <code>/api/reviews</code>.
                     </div>
@@ -477,16 +474,20 @@
                     </div>
 
                     <div class="panel-body" id="servicesBody"></div>
+
                     <div class="footer-note">
                         Services are fetched from <code>/api/services</code>.
                     </div>
                 </div>
+
             </div>
         </section>
     </main>
 </div>
 
 <script>
+    const API_BASE = "http://localhost:8080";
+
     function escapeHtml(value) {
         return String(value ?? "")
             .replaceAll("&", "&amp;")
@@ -506,9 +507,11 @@
         if (normalized === "ADMIN") {
             return `<span class="role-badge role-admin">ADMIN</span>`;
         }
+
         if (normalized === "PROVIDER") {
             return `<span class="role-badge role-provider">PROVIDER</span>`;
         }
+
         if (normalized === "CUSTOMER") {
             return `<span class="role-badge role-customer">CUSTOMER</span>`;
         }
@@ -525,6 +528,11 @@
         `;
     }
 
+    function logout() {
+        localStorage.removeItem("currentUser");
+        window.location.href = "../index.html";
+    }
+
     async function loadUsers() {
         const tableBody = document.getElementById("userTableBody");
         const loadStatus = document.getElementById("loadStatus");
@@ -533,7 +541,7 @@
         loadStatus.textContent = "Loading users...";
 
         try {
-            const response = await fetch("/admin/users", {
+            const response = await fetch(`${API_BASE}/admin/users`, {
                 method: "GET",
                 headers: {
                     "Accept": "application/json"
@@ -548,18 +556,20 @@
             updateUserStats(users);
 
             if (!Array.isArray(users) || users.length === 0) {
-                setEmptyRow("userTableBody", 5, "No users found in the database.");
+                setEmptyRow("userTableBody", 6, "No users found in the database.");
                 loadStatus.textContent = "No users found.";
                 return;
             }
 
             users.forEach(user => {
                 const row = document.createElement("tr");
+
                 row.innerHTML = `
                     <td>${user.id ?? ""}</td>
                     <td>${escapeHtml(user.name)}</td>
                     <td>${escapeHtml(user.email)}</td>
                     <td>${renderRoleBadge(user.role)}</td>
+                    <td><span class="status-badge">${escapeHtml(user.accountStatus || "N/A")}</span></td>
                     <td>
                         <div class="action-buttons">
                             <button class="btn btn-view" type="button" onclick="viewUser(${user.id})">View</button>
@@ -567,13 +577,14 @@
                         </div>
                     </td>
                 `;
+
                 tableBody.appendChild(row);
             });
 
-            loadStatus.textContent = "Users loaded successfully from database.";
+            loadStatus.textContent = "Users loaded from Neon.";
         } catch (error) {
             console.error("Users fetch error:", error);
-            setEmptyRow("userTableBody", 5, "Error loading users: " + error.message);
+            setEmptyRow("userTableBody", 6, "Error loading users: " + error.message);
             loadStatus.textContent = "Error loading users.";
             updateUserStats([]);
         }
@@ -590,10 +601,13 @@
 
     async function loadReviews() {
         const reviewStatus = document.getElementById("reviewStatus");
+        const reviewTableBody = document.getElementById("reviewTableBody");
+
         reviewStatus.textContent = "Loading reviews...";
+        reviewTableBody.innerHTML = "";
 
         try {
-            const response = await fetch("/api/reviews", {
+            const response = await fetch(`${API_BASE}/api/reviews`, {
                 method: "GET",
                 headers: {
                     "Accept": "application/json"
@@ -605,32 +619,37 @@
             }
 
             const reviews = await response.json();
+
             document.getElementById("reviewCount").textContent = Array.isArray(reviews) ? reviews.length : 0;
 
             if (!Array.isArray(reviews) || reviews.length === 0) {
-                setEmptyRow("reviewTableBody", 3, "No reviews found in the database.");
+                setEmptyRow("reviewTableBody", 4, "No reviews found in the database.");
                 reviewStatus.textContent = "No reviews found.";
                 return;
             }
 
-            const reviewTableBody = document.getElementById("reviewTableBody");
-            reviewTableBody.innerHTML = "";
-
             reviews.forEach(review => {
                 const row = document.createElement("tr");
+
                 row.innerHTML = `
                     <td>${review.id ?? ""}</td>
-                    <td>${escapeHtml(review.comment)}</td>
-                    <td><span class="rating-badge">${review.rating ?? ""}</span></td>
+                    <td>${escapeHtml(review.comment || "N/A")}</td>
+                    <td><span class="rating-badge">${review.rating ?? "N/A"}</span></td>
+                    <td>
+                        <button class="btn btn-delete" type="button" onclick="deleteReview(${review.id})">
+                            Delete
+                        </button>
+                    </td>
                 `;
+
                 reviewTableBody.appendChild(row);
             });
 
-            reviewStatus.textContent = "Reviews loaded successfully from database.";
+            reviewStatus.textContent = "Reviews loaded from Neon.";
         } catch (error) {
             console.error("Reviews fetch error:", error);
             document.getElementById("reviewCount").textContent = "0";
-            setEmptyRow("reviewTableBody", 3, "Error loading reviews: " + error.message);
+            setEmptyRow("reviewTableBody", 4, "Error loading reviews: " + error.message);
             reviewStatus.textContent = "Error loading reviews.";
         }
     }
@@ -643,7 +662,7 @@
         serviceStatus.textContent = "Loading services...";
 
         try {
-            const response = await fetch("/api/services", {
+            const response = await fetch(`${API_BASE}/api/services`, {
                 method: "GET",
                 headers: {
                     "Accept": "application/json"
@@ -655,6 +674,7 @@
             }
 
             const services = await response.json();
+
             document.getElementById("serviceCount").textContent = Array.isArray(services) ? services.length : 0;
 
             if (!Array.isArray(services) || services.length === 0) {
@@ -666,19 +686,29 @@
             services.forEach(service => {
                 const card = document.createElement("div");
                 card.className = "service-card";
+
                 card.innerHTML = `
                     <div class="service-title">${escapeHtml(service.title || "Untitled Service")}</div>
+
                     <div class="service-meta">
+                        <div><strong>ID:</strong> ${service.id ?? "N/A"}</div>
                         <div><strong>Description:</strong> ${escapeHtml(service.description || "N/A")}</div>
                         <div><strong>Category:</strong> ${escapeHtml(service.category || "N/A")}</div>
                         <div><strong>Price:</strong> ${service.price ?? "N/A"}</div>
                         <div><strong>Availability:</strong> ${escapeHtml(service.availability || "N/A")}</div>
                     </div>
+
+                    <div style="margin-top: 12px;">
+                        <button class="btn btn-delete" type="button" onclick="deleteService(${service.id})">
+                            Delete Service
+                        </button>
+                    </div>
                 `;
+
                 servicesBody.appendChild(card);
             });
 
-            serviceStatus.textContent = "Services loaded successfully from database.";
+            serviceStatus.textContent = "Services loaded from Neon.";
         } catch (error) {
             console.error("Services fetch error:", error);
             document.getElementById("serviceCount").textContent = "0";
@@ -689,7 +719,7 @@
 
     async function viewUser(id) {
         try {
-            const response = await fetch(`/admin/users/${id}`, {
+            const response = await fetch(`${API_BASE}/admin/users/${id}`, {
                 method: "GET",
                 headers: {
                     "Accept": "application/json"
@@ -707,7 +737,8 @@
                 "ID: " + (user.id ?? "") + "\n" +
                 "Name: " + (user.name ?? "") + "\n" +
                 "Email: " + (user.email ?? "") + "\n" +
-                "Role: " + (user.role ?? "")
+                "Role: " + (user.role ?? "") + "\n" +
+                "Status: " + (user.accountStatus ?? "N/A")
             );
         } catch (error) {
             alert("Error: " + error.message);
@@ -719,7 +750,7 @@
         if (!confirmed) return;
 
         try {
-            const response = await fetch(`/admin/users/${id}`, {
+            const response = await fetch(`${API_BASE}/admin/users/${id}`, {
                 method: "DELETE",
                 headers: {
                     "Accept": "application/json, text/plain, */*"
@@ -728,14 +759,65 @@
 
             if (!response.ok) {
                 const errorText = await response.text();
-                throw new Error(errorText || ("Failed to delete user. Status " + response.status));
+                throw new Error(errorText || "Failed to delete user.");
             }
 
             alert("User deleted successfully.");
             await loadUsers();
+            await loadServices();
         } catch (error) {
             console.error("Delete user error:", error);
             alert("Error deleting user: " + error.message);
+        }
+    }
+
+    async function deleteReview(id) {
+        const confirmed = confirm("Are you sure you want to delete review ID " + id + "?");
+        if (!confirmed) return;
+
+        try {
+            const response = await fetch(`${API_BASE}/api/reviews/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Accept": "application/json, text/plain, */*"
+                }
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || "Failed to delete review.");
+            }
+
+            alert("Review deleted successfully.");
+            await loadReviews();
+        } catch (error) {
+            console.error("Delete review error:", error);
+            alert("Error deleting review: " + error.message);
+        }
+    }
+
+    async function deleteService(id) {
+        const confirmed = confirm("Are you sure you want to delete service ID " + id + "?");
+        if (!confirmed) return;
+
+        try {
+            const response = await fetch(`${API_BASE}/api/services/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Accept": "application/json, text/plain, */*"
+                }
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || "Failed to delete service.");
+            }
+
+            alert("Service deleted successfully.");
+            await loadServices();
+        } catch (error) {
+            console.error("Delete service error:", error);
+            alert("Error deleting service: " + error.message);
         }
     }
 

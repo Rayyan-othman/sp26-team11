@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import autobid.autobid.dto.ReviewRequest;
 import autobid.autobid.entity.Review;
 import autobid.autobid.service.ReviewService;
 
@@ -32,23 +31,18 @@ public class ReviewApiController {
         return ResponseEntity.ok(reviewService.getAllReviews());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Review> getReviewById(@PathVariable Long id) {
-        return ResponseEntity.ok(reviewService.getReviewById(id));
-    }
-
     @PostMapping
-    public ResponseEntity<Review> createReview(@RequestBody ReviewRequest request) {
-        Review review = reviewService.createReview(request);
-        if (review != null) {
-            return ResponseEntity.ok(review);
-        }
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity<Review> createReview(@RequestBody Review review) {
+        return ResponseEntity.ok(reviewService.saveReview(review));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteReview(@PathVariable Long id) {
-        reviewService.deleteReview(id);
-        return ResponseEntity.ok("Review deleted successfully");
+    public ResponseEntity<?> deleteReview(@PathVariable Long id) {
+        try {
+            reviewService.deleteReview(id);
+            return ResponseEntity.ok("Review deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Delete failed: " + e.getMessage());
+        }
     }
 }

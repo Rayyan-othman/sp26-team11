@@ -12,7 +12,6 @@
 <body class="d-flex h-100 text-center text-white">
   <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
 
-    <!-- HEADER -->
     <header class="mb-auto">
       <div>
         <h3 class="float-md-start mb-0 fw-bold">AutoBid</h3>
@@ -24,32 +23,28 @@
       </div>
     </header>
 
-    <!-- MAIN -->
     <main class="px-3">
       <div class="glass p-4 text-start">
 
         <h1 class="h3 fw-bold mb-1">Login</h1>
-        <p class="small opacity-75 mb-3">Prototype only — checks accounts saved in your browser.</p>
+        <p class="small opacity-75 mb-3">Checks account from the Neon database.</p>
 
         <div id="msg" class="small mb-3" style="display:none;"></div>
 
-        <!-- ROLE -->
         <div class="mb-3">
           <label class="form-label small opacity-75">Role</label>
           <select id="role" class="form-select">
-            <option value="customer">Customer</option>
-            <option value="provider">Provider</option>
-            <option value="admin">System Admin</option>
+            <option value="CUSTOMER">Customer</option>
+            <option value="PROVIDER">Provider</option>
+            <option value="ADMIN">System Admin</option>
           </select>
         </div>
 
-        <!-- EMAIL -->
         <div class="mb-3">
           <label class="form-label small opacity-75">Email</label>
           <input id="email" class="form-control" placeholder="customer@demo.com">
         </div>
 
-        <!-- PASSWORD -->
         <div class="mb-3">
           <label class="form-label small opacity-75">Password</label>
           <input id="password" type="password" class="form-control" placeholder="123456">
@@ -60,112 +55,89 @@
           <button class="btn btn-accent" onclick="login()">Login</button>
         </div>
 
-        <div class="small opacity-75 mt-3">
-          Demo accounts:<br/>
-          Customer: customer@demo.com / 123456<br/>
-          Provider: provider@demo.com / 123456<br/>
-          Admin: admin@demo.com / admin123
-        </div>
-
       </div>
     </main>
 
     <footer class="mt-auto text-white-50">
-      <p class="mb-0 small">AutoBid • UI-only prototype</p>
+      <p class="mb-0 small">AutoBid</p>
     </footer>
   </div>
 
 <script>
-  // -------------------------------
-  // PRELOAD DEMO USERS (only once)
-  // -------------------------------
-  function seedDemoUsersIfNeeded(){
-    const existing = JSON.parse(localStorage.getItem("users") || "[]");
-    if(existing.length > 0) return;
+  const API_BASE = "http://localhost:8080";
 
-    const demoUsers = [
-      { name:"John Carter", email:"customer@demo.com", password:"123456", role:"customer" },
-      { name:"Sarah Williams", email:"sarah@demo.com", password:"123456", role:"customer" },
-      { name:"Mike Auto Service", email:"provider@demo.com", password:"123456", role:"provider" },
-      { name:"Elite Mobile Mechanics", email:"elite@demo.com", password:"123456", role:"provider" },
-      { name:"System Administrator", email:"admin@demo.com", password:"admin123", role:"admin" }
-    ];
-
-    localStorage.setItem("users", JSON.stringify(demoUsers));
-  }
-
-  seedDemoUsersIfNeeded();
-
-  // Autofill email after signup (nice for demo)
   const last = localStorage.getItem("lastSignupEmail");
-  if(last){
+  if (last) {
     document.getElementById("email").value = last;
   }
 
-  // -------------------------------
-  // MESSAGE
-  // -------------------------------
-  function showMsg(text, ok=true){
+  function showMsg(text, ok = true) {
     const el = document.getElementById("msg");
     el.style.display = "block";
     el.style.color = ok ? "rgba(255,255,255,0.85)" : "#ffb4b4";
     el.textContent = text;
   }
 
-  // -------------------------------
-  // LOGIN
-  // -------------------------------
-  function login(){
+  async function login() {
     const role = document.getElementById("role").value;
     const email = document.getElementById("email").value.trim().toLowerCase();
     const password = document.getElementById("password").value;
 
-    if(!email || !password){
+    if (!email || !password) {
       showMsg("Please enter email and password.", false);
       return;
     }
 
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
+    try {
+      const response = await fetch(`${API_BASE}/admin/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json, text/plain, */*"
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+          role: role
+        })
+      });
 
-    // match email + password + role
-    const found = users.find(u =>
-      u.email === email &&
-      u.password === password &&
-      u.role === role
-    );
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Login failed.");
+      }
 
-    if(!found){
-      showMsg("Login failed. Check role/email/password.", false);
-      return;
+      const found = await response.json();
+
+      localStorage.setItem("currentUser", JSON.stringify({
+        id: found.id,
+        name: found.name,
+        email: found.email,
+        role: found.role
+      }));
+
+      showMsg("Login successful! Redirecting...", true);
+
+      setTimeout(() => {
+        routeByRole(found.role);
+      }, 600);
+
+    } catch (error) {
+      showMsg("Error: " + error.message, false);
     }
-
-    // Save current session
-    localStorage.setItem("currentUser", JSON.stringify({
-      name: found.name,
-      email: found.email,
-      role: found.role
-    }));
-
-    showMsg("Login successful! Redirecting...", true);
-
-    setTimeout(() => {
-      routeByRole(found.role);
-    }, 600);
   }
 
-  // -------------------------------
-  // ROUTING (UPDATE if your filenames differ)
-  // -------------------------------
-    function routeByRole(role){
-  
-    if(role === "customer"){
+  function routeByRole(role) {
+    const normalizedRole = String(role || "").toUpperCase();
+
+    if (normalizedRole === "CUSTOMER") {
       location.href = "../Customer/customerdashboard.html";
-    }
-    else if(role === "provider"){
+    } else if (normalizedRole === "PROVIDER") {
       location.href = "../Provider/dashboard.html";
-    }
-    else if(role === "admin"){
+    } else if (normalizedRole === "ADMIN") {
       location.href = "../SystemAdmin/admindashboard.html";
+    } else {
+      showMsg("Unknown role. Cannot route user.", false);
     }
   }
 </script>
