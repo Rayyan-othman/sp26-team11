@@ -1,91 +1,144 @@
+
 # sp26-team11
-team 11 group project for CSC 340 of 2026
--Rayyan Othman
--Gopal Vulli
--Gamal Hassan
+Team 11 group project for CSC 340 (2026)  
+- Rayyan Othman  
+- Gopal Vulli  
+- Gamal Hassan  
+
+---
 
 ## Title
 > AutoBid 
 
-## Team Members
-> Team Member #1 Rayyan Othman
+---
 
+## Team Members
+> Rayyan Othman  
+> Gopal Vulli  
+> Gamal Hassan  
+
+---
 
 ## Description 
-Our project is a system/service that allows the customer to book mobie on site general mechanic and detailing services right to their fornt door with ease and convenience customer can veiw a list of provers and ther serbice the offer and book and leave reveiws with specialists that meet their need and providers can post themseves and their qualifications and receive reveiws on their work and get feedback and jobs for themselves through this system app. This app will solve the problem of being to busy to get tho these sort of service locations and the motivation behind this to make general repairs and cleaning and detailing for convenient automated and accesable for people.
+Our project is a system that allows customers to book mobile, on-site mechanic and detailing services directly to their location with ease and convenience. Customers can view a list of providers and the services they offer, book appointments, and leave reviews based on their experience.
+
+Providers can create profiles, list their qualifications, post services, and receive reviews and feedback from customers. This helps providers gain visibility and attract more jobs.
+
+This application solves the problem of customers being too busy to visit service locations by making automotive services more convenient, automated, and accessible.
+
+---
+
+## System Architecture
+
+The project is divided into three main components:
+
+### Backend API (`/backendapi`)
+- Built using Spring Boot  
+- Handles business logic and database operations  
+- Provides REST endpoints for users, services, bookings, reviews, and admin actions  
+
+### MVC Application (`/mvc-app`)
+- Handles frontend rendering  
+- Connects UI to backend API  
+- Displays dynamic data from the database  
+
+### Database
+- PostgreSQL (Neon)  
+- Stores users, services, bookings, and reviews  
+
+---
 
 ## App Functions
 
-1. Customer Gamal Hassan (the user with the customer role):
-    1. Create/modify customer profile – Customers can register an account, log in securely, and update their personal information such as contact details and service preferences.
-    2. View available services – Customers can browse a list of providers and available services, including pricing, descriptions, and ratings.
-    3. Subscribe to available services – Customers can book services directly in the app by selecting a provider, choosing a time slot, and confirming the request.
-    4. Write reviews for subscribed services – After a completed service, customers can leave ratings and written reviews to share feedback.
+### 1. Customer (Gamal Hassan)
+1. Create/modify customer profile – Customers can register, log in securely, and update personal information.
+2. View available services – Customers can browse providers, pricing, and service descriptions.
+3. Book services – Customers can select a provider, choose a time, and confirm booking.
+4. Write reviews – Customers can leave ratings and feedback after a completed service.
 
+---
 
+### 2. Provider (Gopal Vulli)
+1. Create/modify/remove provider profile – Providers can manage their account and qualifications.
+2. Create services – Providers can post services with pricing and descriptions.
+3. View customer statistics – Providers can view booking history, ratings, and service performance.
+4. Reply to reviews – Providers can respond to customer feedback.
 
-2. Provider Gopal Vulli (the user with the provider role):
-    1. Create/modify/remove provider profile – Providers can register an account, add qualifications and credentials, update availability, or remove their profile.
-    2. Create services – Providers can post mechanic, repair, or detailing services with pricing and service descriptions.
-    3. View customer statistics – Providers can view booking history, ratings, and other service metrics.
-    4. Reply to reviews – Providers can respond to customer reviews to address feedback.
+---
 
+### 3. SysAdmin (Rayyan Othman)
+1. Manage users – Admin can view users and remove or restrict access when necessary.
+2. Moderate services – Admin can add, remove, or update services on the platform.
+3. Moderate reviews – Admin can remove inappropriate reviews.
+4. View usage statistics – Admin can view platform data and statistics.
 
-3.  SysAdmin Rayyan othman (the user with the admin role ):
-    1. Manage user access - will allow the system admin user to log in and make changes and veiw the app as an administrator .
-    2. Moderate services - can remove add change or adjust the app ,services or users if needed.
-    3. Moderate reviews - allows for removing commenting and moderation of all reveiw left by customers and providers.
-    4. View usage statistics - System admine user can collect veiw and save data statistivs collected from the customer and provider use cases.
+---
 
+### SysAdmin Use Cases
+- Manage users → `GET /users`, `PUT /users/{id}`  
+- Moderate services → `GET /services`, `DELETE /services/{id}`  
+- Moderate reviews → `GET /reviews`, `DELETE /reviews/{id}`  
+- View usage statistics → `GET /statistics`  
 
-       ### SysAdmin Use Cases
-- Manage user access -> `GET /users`, `PUT /users/{id}`
-- Moderate services -> `GET /services`, `DELETE /services/{id}`
-- Moderate reviews -> `GET /reviews`, `DELETE /reviews/{id}`
-- View usage statistics -> `GET /statistics`
-
- 
+---
 ![032419BD-BE75-4F09-B05A-00B62E625A99](https://github.com/user-attachments/assets/14f88ad3-bef3-436c-ab6f-8d9d3120c00a)
 
-   ## API Endpoints
+---
+
+## API Endpoints
 
 ### User Endpoints
-- `GET /users` -> Get all users
-- `GET /users/{id}` -> Get user by id
-- `POST /users` -> Create a new user
-- `PUT /users/{id}` -> Update an existing user
-- `DELETE /users/{id}` -> Delete a user
+- `GET /users` → Get all users  
+- `GET /users/{id}` → Get user by id  
+- `POST /users` → Create a new user  
+- `PUT /users/{id}` → Update an existing user  
+- `DELETE /users/{id}` → Delete a user  
 
 ### Service Endpoints
-- `GET /services` -> Get all services
-- `GET /services/{id}` -> Get service by id
-- `POST /services` -> Create a new service
-- `PUT /services/{id}` -> Update an existing service
-- `DELETE /services/{id}` -> Delete a service
+- `GET /services` → Get all services  
+- `GET /services/{id}` → Get service by id  
+- `POST /services` → Create a new service  
+- `PUT /services/{id}` → Update an existing service  
+- `DELETE /services/{id}` → Delete a service  
 
 ### Booking Endpoints
-- `GET /bookings` -> Get all bookings
-- `GET /bookings/{id}` -> Get booking by id
-- `POST /bookings` -> Create a new booking
-- `PUT /bookings/{id}` -> Update an existing booking
-- `DELETE /bookings/{id}` -> Delete a booking
+- `GET /bookings`  
+- `GET /bookings/{id}`  
+- `POST /bookings`  
+- `PUT /bookings/{id}`  
+- `DELETE /bookings/{id}`  
 
 ### Review Endpoints
-- `GET /reviews` -> Get all reviews
-- `GET /reviews/{id}` -> Get review by id
-- `GET /reviews/provider/{providerId}` -> Get reviews for a provider
-- `POST /reviews` -> Create a new review
-- `PUT /reviews/{id}` -> Update an existing review
-- `DELETE /reviews/{id}` -> Delete a review
+- `GET /reviews`  
+- `GET /reviews/{id}`  
+- `GET /reviews/provider/{providerId}`  
+- `POST /reviews`  
+- `PUT /reviews/{id}`  
+- `DELETE /reviews/{id}`  
 
 ### Reply Endpoints
-- `GET /replies` -> Get all replies
-- `GET /replies/{id}` -> Get reply by id
-- `POST /replies` -> Create a reply to a review
+- `GET /replies`  
+- `GET /replies/{id}`  
+- `POST /replies`  
 
 ### Statistics Endpoints
-- `GET /statistics` -> View overall platform statistics
-- `GET /statistics/provider/{providerId}` -> View statistics for a specific provider
+- `GET /statistics`  
+- `GET /statistics/provider/{providerId}`  
+
+---
+
+## How to Run
+
+### Run Backend
+cd backendapi/autobid
+mvnw.cmd spring-boot:run
+
+### Run MVC App
+cd mvc-app
+mvnw.cmd spring-boot:run
+
+### Open in Browser
+http://localhost:8080
 
 ---
 
@@ -102,33 +155,6 @@ Request:
   "lastName": "Othman",
   "email": "rayyan@email.com",
   "password": "123456",
-  "phone": "3369781184",
-  "role": "CUSTOMER",
-  "accountStatus": "ACTIVE"
-}
-
-Response:
-{
-  "id": 1,
-  "firstName": "Rayyan",
-  "lastName": "Othman",
-  "email": "rayyan@email.com",
-  "phone": "3369781184",
-  "role": "CUSTOMER",
-  "accountStatus": "ACTIVE"
-}
-
----
-
-#### Modify Customer Profile
-Endpoint: PUT /users/1
-
-Request:
-{
-  "firstName": "Rayyan",
-  "lastName": "Othman",
-  "email": "rayyan@email.com",
-  "password": "newpassword123",
   "phone": "3369781184",
   "role": "CUSTOMER",
   "accountStatus": "ACTIVE"
@@ -204,111 +230,13 @@ Response:
 
 ---
 
-### Provider Use Cases
-
-#### Create Provider Profile
-Endpoint: POST /users
-
-Request:
-{
-  "firstName": "John",
-  "lastName": "Mechanic",
-  "email": "john@autobid.com",
-  "password": "123456",
-  "phone": "3361112222",
-  "role": "PROVIDER",
-  "accountStatus": "ACTIVE"
-}
-
-Response:
-{
-  "id": 2,
-  "firstName": "John",
-  "lastName": "Mechanic",
-  "email": "john@autobid.com",
-  "phone": "3361112222",
-  "role": "PROVIDER",
-  "accountStatus": "ACTIVE"
-}
-
----
-
-#### Create Service
-Endpoint: POST /services
-
-Request:
-{
-  "title": "Mobile Oil Change",
-  "description": "On-site oil change service",
-  "price": 89.99,
-  "category": "Mechanic",
-  "availability": "Available",
-  "provider": { "id": 2 }
-}
-
-Response:
-{
-  "id": 1,
-  "title": "Mobile Oil Change",
-  "price": 89.99
-}
-
----
-
-#### View Customer Statistics
-Endpoint: GET /statistics/provider/2
-
-Response:
-{
-  "providerId": 2,
-  "servicesCreated": 1,
-  "bookingsForProvider": 1,
-  "reviewsForProvider": 1
-}
-
----
-
-#### Reply to Review
-Endpoint: POST /replies
-
-Request:
-{
-  "message": "Thank you for your feedback.",
-  "review": { "id": 1 },
-  "provider": { "id": 2 }
-}
-
-Response:
-{
-  "id": 1,
-  "message": "Thank you for your feedback."
-}
-
----
-
 ### SysAdmin Use Cases
 
 #### Manage Users
 Endpoint: GET /users
 
-Response:
-[
-  {
-    "id": 1,
-    "email": "rayyan@email.com",
-    "role": "CUSTOMER"
-  },
-  {
-    "id": 2,
-    "email": "john@autobid.com",
-    "role": "PROVIDER"
-  }
-]
-
----
-
-#### Ban User
-Endpoint: PUT /users/1
+#### Restrict/Remove User Access
+Endpoint: PUT /users/{id}
 
 Request:
 {
@@ -326,30 +254,12 @@ Response:
 #### Moderate Services
 Endpoint: DELETE /services/1
 
-Response:
-{
-  "message": "Service deleted successfully"
-}
-
 ---
 
 #### Moderate Reviews
 Endpoint: DELETE /reviews/1
 
-Response:
-{
-  "message": "Review deleted successfully"
-}
-
 ---
 
 #### View Platform Statistics
 Endpoint: GET /statistics
-
-Response:
-{
-  "totalUsers": 2,
-  "totalServices": 1,
-  "totalBookings": 1,
-  "totalReviews": 1
-}
