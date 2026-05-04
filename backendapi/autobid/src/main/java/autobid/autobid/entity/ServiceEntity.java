@@ -24,7 +24,7 @@ public class ServiceEntity {
 
     @ManyToOne
     @JoinColumn(name = "provider_id")
-    private Provider provider;
+    private User provider;   // <-- Provider is now a User
 
     public ServiceEntity() {
     }
@@ -77,11 +77,11 @@ public class ServiceEntity {
         this.availability = availability;
     }
 
-    public Provider getProvider() {
+    public User getProvider() {
         return provider;
     }
 
-    public void setProvider(Provider provider) {
+    public void setProvider(User provider) {
         this.provider = provider;
     }
 }

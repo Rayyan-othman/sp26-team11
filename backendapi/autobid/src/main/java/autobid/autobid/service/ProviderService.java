@@ -41,27 +41,60 @@ public class ProviderService {
 
     public User updateProvider(Long id, User updated) {
         User existing = userRepository.findById(id).orElseThrow();
+
         existing.setName(updated.getName());
         existing.setEmail(updated.getEmail());
         existing.setAccountStatus(updated.getAccountStatus());
         existing.setRole("PROVIDER");
+
         return userRepository.save(existing);
     }
 
     public void deleteProvider(Long id) {
+
+        // 1. Remove replies
+        replyRepository.deleteAll(replyRepository.findByProviderId(id));
+
+        // 2. Detach services from provider
+        List<ServiceEntity> services = serviceRepository.findAll().stream()
+                .filter(s -> s.getProvider() != null && s.getProvider().getId().equals(id))
+                .toList();
+
+        for (ServiceEntity s : services) {
+            s.setProvider(null);
+        }
+
+        serviceRepository.saveAll(services);
+        serviceRepository.flush();
+
+        // 3. Delete provider user
         userRepository.deleteById(id);
     }
 
     // Services
     public ServiceEntity createService(ServiceEntity service) {
+        Long providerId = service.getProvider().getId();
+
+        User provider = userRepository.findById(providerId)
+                .orElseThrow(() -> new RuntimeException("Provider not found"));
+
+        service.setProvider(provider);
         return serviceRepository.save(service);
     }
 
     public ServiceEntity updateService(Long id, ServiceEntity updated) {
         ServiceEntity existing = serviceRepository.findById(id).orElseThrow();
+
         existing.setTitle(updated.getTitle());
         existing.setDescription(updated.getDescription());
         existing.setPrice(updated.getPrice());
+        existing.setCategory(updated.getCategory());
+        existing.setAvailability(updated.getAvailability());
+
+        if (updated.getProvider() != null) {
+            existing.setProvider(updated.getProvider());
+        }
+
         return serviceRepository.save(existing);
     }
 
@@ -76,16 +109,22 @@ public class ProviderService {
         long servicesCreated = serviceRepository.findAll().stream()
                 .filter(s -> s.getProvider() != null && s.getProvider().getId().equals(providerId))
                 .count();
+
         long reviewsForProvider = reviewRepository.findAll().stream()
-                .filter(r -> r.getService().getProvider() != null && r.getService().getProvider().getId().equals(providerId))
+                .filter(r -> r.getService() != null
+                        && r.getService().getProvider() != null
+                        && r.getService().getProvider().getId().equals(providerId))
                 .count();
+
         return new ProviderStatsResponse(providerId, servicesCreated, 0L, reviewsForProvider);
     }
 
     // Reviews
     public List<Review> getReviewsByProvider(Long providerId) {
         return reviewRepository.findAll().stream()
-                .filter(r -> r.getService().getProvider() != null && r.getService().getProvider().getId().equals(providerId))
+                .filter(r -> r.getService() != null
+                        && r.getService().getProvider() != null
+                        && r.getService().getProvider().getId().equals(providerId))
                 .toList();
     }
 
