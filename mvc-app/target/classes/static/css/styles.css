@@ -1,0 +1,167 @@
+body { outline: 8px solid lime !important; }
+
+.btn-light,
+.btn-light:hover,
+.btn-light:focus {
+  color: #333;
+  text-shadow: none; 
+}
+
+
+.btn-accent {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #e11d48;
+  --bs-btn-border-color: #e11d48;
+  --bs-btn-hover-bg: #be123c;
+  --bs-btn-hover-border-color: #be123c;
+  --bs-btn-focus-shadow-rgb: 225, 29, 72;
+}
+
+/* ===== Base structure ===== */
+
+body {
+  min-height: 100vh;
+
+  background:
+    linear-gradient(rgba(0,0,0,.70), rgba(0,0,0,.70)),
+    url("../images/webpageprottype.jpg");
+
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+
+  color: white;
+}
+
+
+
+.cover-container {
+  max-width: 42em; 
+}
+
+
+.wide-container {
+  max-width: 70em;
+}
+
+/* ===== Header ===== */
+
+.nav-masthead .nav-link {
+  color: rgba(255, 255, 255, .60);
+  border-bottom: .25rem solid transparent;
+  padding: .25rem 0;
+}
+
+/* Hover/Focus underline */
+.nav-masthead .nav-link:hover,
+.nav-masthead .nav-link:focus {
+  color: rgba(255,255,255,.90);
+  border-bottom-color: rgba(255, 255, 255, .25);
+}
+
+/* space between nav links */
+.nav-masthead .nav-link + .nav-link {
+  margin-left: 1rem;
+}
+
+/* Active link */
+.nav-masthead .active {
+  color: #fff;
+  border-bottom-color: #fff;
+}
+
+
+.glass {
+  background: rgba(0,0,0,.45);
+  border: 1px solid rgba(255,255,255,.10);
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
+}
+
+/* Make form controls match dark background */
+.form-control, .form-select {
+  background-color: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.14);
+  color: #fff;
+}
+.form-control:focus, .form-select:focus {
+  background-color: rgba(255,255,255,.08);
+  color: #fff;
+  border-color: rgba(225, 29, 72, .55);
+  box-shadow: 0 0 0 .25rem rgba(225, 29, 72, .18);
+}
+.form-control::placeholder {
+  color: rgba(255,255,255,.55);
+}
+/* =========================================
+   Support teammate simple pages (.container/.card/.nav)
+   So pages look consistent without rewriting
+========================================= */
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.card {
+  background: rgba(0,0,0,.45);
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 16px;
+  padding: 24px;
+  backdrop-filter: blur(10px);
+}
+
+header .nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
+  border-bottom: 1px solid rgba(255,255,255,.12);
+  background: rgba(0,0,0,.35);
+}
+
+header .brand {
+  font-weight: 800;
+  color: #fff;
+  text-decoration: none;
+}
+
+header a {
+  color: rgba(255,255,255,.85);
+  text-decoration: none;
+}
+
+header a:hover {
+  color: #fff;
+  text-decoration: underline;
+  text-decoration-color: rgba(225,29,72,.65);
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 10pt;
+  border: 1px solid rgba(225,29,72,.40);
+  background: rgba(225,29,72,.18);
+  color: #fff;
+}
+/* ===== Fix role dropdown visibility (dark theme) ===== */
+.form-select {
+  background-color: rgba(255,255,255,.06);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.14);
+}
+
+/* options list when dropdown opens */
+.form-select option {
+  background-color: #0f121c; /* dark */
+  color: #fff;              /* white text */
+}
+
+/* (optional) improve select focus */
+.form-select:focus {
+  border-color: rgba(225, 29, 72, .55);
+  box-shadow: 0 0 0 .25rem rgba(225, 29, 72, .18);
+}

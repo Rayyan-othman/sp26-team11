@@ -31,4 +31,23 @@ public class ServiceService {
 
         serviceRepository.deleteById(id);
     }
+
+    public ServiceEntity updateService(Long id, ServiceEntity updated) {
+        ServiceEntity existing = serviceRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Service not found with id: " + id));
+    
+        existing.setTitle(updated.getTitle());
+        existing.setDescription(updated.getDescription());
+        existing.setPrice(updated.getPrice());
+        existing.setCategory(updated.getCategory());
+        existing.setAvailability(updated.getAvailability());
+        existing.setServiceDate(updated.getServiceDate());
+    
+        // Keep existing provider
+        if (updated.getProvider() != null) {
+            existing.setProvider(updated.getProvider());
+        }
+    
+        return serviceRepository.save(existing);
+    }
 }

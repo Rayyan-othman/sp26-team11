@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,6 +35,15 @@ public class ServiceApiController {
     @PostMapping
     public ResponseEntity<ServiceEntity> createService(@RequestBody ServiceEntity service) {
         return ResponseEntity.ok(serviceService.saveService(service));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateService(@PathVariable Long id, @RequestBody ServiceEntity service) {
+        try {
+            return ResponseEntity.ok(serviceService.updateService(id, service));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Update failed: " + e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
