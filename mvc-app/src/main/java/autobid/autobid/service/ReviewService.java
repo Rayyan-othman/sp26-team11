@@ -47,7 +47,6 @@ public class ReviewService {
         return reviewRepository.save(review);
     }
 
-    // Called by ReviewApiController
     public Review saveReview(Review review) {
         return reviewRepository.save(review);
     }
