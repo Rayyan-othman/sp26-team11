@@ -1,0 +1,54 @@
+body {
+  background-color: #1a1a1a;
+  color: #fff;
+}
+
+.glass {
+  background: rgba(255, 255, 255, .04);
+  border: 1px solid rgba(255, 255, 255, .10);
+  border-radius: 15px;
+  position: relative;
+}
+
+.output {
+  background-color: rgba(255, 255, 255, .08);
+  border-radius: 8px;
+  padding: 10px;
+  font-family: monospace;
+  white-space: pre-wrap;
+  margin-top: 10px;
+}
+
+input,
+textarea,
+select {
+  background-color: rgba(255, 255, 255, .1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, .3);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #ccc;
+}
+
+.sticky-btn {
+  position: sticky;
+  top: 10px;
+  z-index: 10;
+}
+
+/* Submit / accent buttons */
+.btn-accent {
+  background-color: #cdcac5;
+  color: #1a1a1a;
+  border-color: #e8dfc9;
+  font-weight: 600;
+}
+
+.btn-accent:hover,
+.btn-accent:focus {
+  background-color: #e3ddd4;
+  border-color: #d4cec5;
+ color: #1a1a1a;
+}
