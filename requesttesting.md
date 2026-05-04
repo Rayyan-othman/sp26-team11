@@ -1,134 +1,120 @@
-# AutoBid Test Plan
-
 **Project Name:** AutoBid  
 **Version:** 1.0  
-**Date:** May 2026  
-**Purpose:**  
-This test plan validates that the AutoBid system correctly supports all actors (Customer, Provider, Admin) and that all core features (registration, booking, service management, reviews, and admin controls) function properly with persistent database storage.
+**Date:** 2026-05-04  
+**Purpose:** This document outlines comprehensive test scenarios to demonstrate all functional and non-functional requirements of the AutoBid system, including customer, provider, and admin interactions.
 
 ---
 
 ## Actors
-- Provider P: Mechanic or Detailer offering services
-- Customer C: User booking services
-- Admin A: System administrator managing users, services, and reviews
+- Provider P: Mechanic / Service Provider  
+- Customer C: Customer  
+- Service S: Automotive Service (e.g., Oil Change, Detailing)
 
 ---
 
 ## Use Cases
 
 #### 1. Customer: US-CUST-001 — Register & manage profile
-1. Customer creates an account using sign-up page.
-2. Customer logs in and updates profile (name, preferences).
-3. Changes are saved and persist after logout/login.
+1. Customer C1 logs in for the first time and creates a profile.
+2. C1 edits their profile information .
+3. C1 exits.
+
+#### 2. Customer: US-CUST-002 — View available services
+1. C1 logs in.
+2. C1 views all available services S1 (Mobile Oil Change).
+3. C1 exits.
+
+#### 3. Customer: US-CUST-003 — Book a service
+1. C1 logs in.
+2. C1 selects service S1.
+3. C1 books S1 for a specific date.
+4. Booking is confirmed.
+5. C1 exits.
+
+#### 4. Customer: US-CUST-004 — Write a review
+1. C1 logs in after service completion.
+2. C1 writes a positive review for service S1.
+3. C1 exits.
+
+#### 5. Customer: US-CUST-005 — Read reviews & book
+1. Customer C2 logs in and creates profile.
+2. C2 browses services.
+3. C2 views reviews for S1.
+4. C2 books S1.
+5. C2 exits.
 
 ---
 
-#### 2. Customer: US-CUST-002 — Browse & book services
-1. Customer logs in and browses available services.
-2. Customer selects a service and books it.
-3. Booking is saved and visible in customer dashboard.
+#### 6. Provider: US-PROV-001 — Create provider profile & service
+1. Provider P1 logs in and creates a profile.
+2. P1 creates service S1 (Mobile Oil Change with price and description).
+3. P1 exits.
+
+#### 7. Provider: US-PROV-002 — View statistics & reply to review
+1. P1 logs in.
+2. P1 views provider statistics (bookings, reviews).
+3. P1 reads review for S1.
+4. P1 replies to the review.
+5. P1 exits.
 
 ---
 
-#### 3. Customer: US-CUST-003 — Leave a review
-1. Customer selects a completed service.
-2. Customer submits a rating and comment.
-3. Review is stored in database and displayed publicly.
-
----
-
-#### 4. Provider: US-PROV-001 — Create & manage services
-1. Provider logs in and creates a new service (title, description, price).
-2. Provider edits or deletes an existing service.
-3. Changes reflect immediately in service listings.
-
----
-
-#### 5. Provider: US-PROV-002 — View reviews
-1. Provider logs in to dashboard.
-2. Provider views customer reviews on their services.
-3. Reviews are correctly fetched from database.
-
----
-
-#### 6. Admin: US-ADMIN-001 — Manage users
+#### 8. Admin: US-ADMIN-001 — Manage users and content
 1. Admin logs in.
 2. Admin views all users.
-3. Admin removes users or restricts access when necessary.
-4. Changes persist in database.
-
----
-
-#### 7. Admin: US-ADMIN-002 — Manage services & reviews
-1. Admin views all services and reviews.
-2. Admin deletes inappropriate services or reviews.
-3. Changes reflect immediately in UI and database.
+3. Admin bans a user.
+4. Admin deletes a service or review.
+5. Admin views system statistics.
+6. Admin exits.
 
 ---
 
 ## CROSS-CUTTING TEST SCENARIOS (Non-Functional Requirements)
 
----
-
 ### Performance Requirements
 
-**Scenario P1: Discover page response time < 1.5 seconds**
+**Scenario P1: Browse services response time < 1.5 seconds**
 - **Setup:** Server under normal load
 - **Steps:**
-  1. Load Browse Services page with 10+ services
+  1. Load services page with 5+ providers and 10+ services
   2. Repeat 10 times
 - **Expected Outcome:** 95% of requests ≤ 1.5 seconds
 
----
-
-**Scenario P2: API response under load**
-- **Setup:** Simulate multiple users (5–10 concurrent requests)
+**Scenario P2: Booking request response time < 1.0 second**
+- **Setup:** Server under normal load
 - **Steps:**
-  1. Send repeated GET requests to `/api/services`
-  2. Measure response times
-- **Expected Outcome:** Responses remain under 2 seconds without failure
+  1. Submit booking request
+  2. Repeat 10 times
+- **Expected Outcome:** 99% of requests ≤ 1.0 second
 
 ---
 
 ### Security & Privacy Requirements
 
-**Scenario S1: Unauthorized access prevention**
-- **Setup:** User not logged in
+**Scenario S1: Role-based access control**
+- **Setup:** Customer attempts provider/admin actions
 - **Steps:**
-  1. Attempt to access admin dashboard URL directly
-  2. Attempt to access provider endpoints
-- **Expected Outcome:** Access denied or redirected to login
-
----
-
-**Scenario S2: Data protection**
-- **Setup:** Logged-in user
-- **Steps:**
-  1. Attempt to modify another user’s data via API
-  2. Submit request with different user ID
-- **Expected Outcome:** Request rejected (no unauthorized changes)
+  1. Customer logs in
+  2. Attempts to access provider statistics endpoint
+- **Expected Outcome:**
+  - Access denied (403 Forbidden)
+  - No sensitive data exposed
 
 ---
 
 ### Usability Requirements
 
-**Scenario U1: Easy navigation**
-- **Setup:** First-time user
+**Scenario U1: Customer completes booking in ≤ 3 minutes**
+- **Setup:** New user test
 - **Steps:**
-  1. Navigate from homepage → login → dashboard
-  2. Browse services and return to homepage
-- **Expected Outcome:** Navigation is intuitive and completes 
+  1. User logs in
+  2. Browses services
+  3. Books a service
+- **Expected Outcome:** Completed ≤ 3 minutes
 
----
-
-**Scenario U2: Form usability**
-- **Setup:** User filling forms
+**Scenario U2: Provider creates service in ≤ 5 minutes**
+- **Setup:** New provider account
 - **Steps:**
-  1. Submit signup form with missing fields
-  2. Submit valid form
-- **Expected Outcome:**  
-  - Errors displayed clearly for invalid input  
-  - Successful submission redirects user appropriately  
-
----
+  1. Provider logs in
+  2. Creates a service with details
+- **Expected Outcome:** Completed ≤ 5 minutes
