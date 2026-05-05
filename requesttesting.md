@@ -56,7 +56,6 @@
 #### 8. Admin: US-ADMIN-001 — Manage users and content
 1. Admin logs in.
 2. Admin views all users.
-3. Admin bans a user.
 4. Admin deletes a service or review.
 5. Admin views system statistics.
 6. Admin exits.
