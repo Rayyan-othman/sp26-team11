@@ -9,15 +9,15 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "reviews")
-public class Review {
+@Table(name = "bookings")
+public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer rating;
-    private String comment;
+    private String date;
+    private String time;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
@@ -27,16 +27,16 @@ public class Review {
     @JoinColumn(name = "service_id")
     private ServiceEntity service;
 
-    public Review() {}
+    public Booking() {}
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public Integer getRating() { return rating; }
-    public void setRating(Integer rating) { this.rating = rating; }
+    public String getDate() { return date; }
+    public void setDate(String date) { this.date = date; }
 
-    public String getComment() { return comment; }
-    public void setComment(String comment) { this.comment = comment; }
+    public String getTime() { return time; }
+    public void setTime(String time) { this.time = time; }
 
     public User getCustomer() { return customer; }
     public void setCustomer(User customer) { this.customer = customer; }

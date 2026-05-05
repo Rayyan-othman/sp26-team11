@@ -1,22 +1,214 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <title>My Bookings</title>
-  <link rel="stylesheet" href="../css/styles.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AutoBid • My Bookings</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <style>
+    .btn { display:inline-block; text-align:center; text-decoration:none; padding:10px 16px; border-radius:12px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.06); color:inherit; font-weight:600; cursor:pointer; font-size:.9rem; }
+    .btn:hover{ filter:brightness(1.08); }
+    .btn-primary{ background:rgba(255,0,84,.20); border-color:rgba(255,0,84,.35); }
+    .btn-danger{ background:rgba(220,53,69,.20); border-color:rgba(220,53,69,.40); }
+    .muted{ opacity:.8; }
+    .small{ font-size:.9rem; }
+    .list { display:flex; flex-direction:column; gap:12px; margin-top:16px; }
+    .list-item { padding:16px; border-radius:14px; border:1px solid rgba(255,255,255,.10); background:rgba(0,0,0,.25); display:flex; gap:12px; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; }
+    .pill { display:inline-block; font-size:.8rem; padding:4px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); white-space:nowrap; }
+    .pill.ok{ border-color:rgba(0,255,160,.25); background:rgba(0,255,160,.12); }
+    .item-actions{ display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+    .empty{ opacity:.55; font-style:italic; margin-top:12px; }
+
+    /* Review modal */
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:1000; align-items:center; justify-content:center; }
+    .modal-overlay.open{ display:flex; }
+    .modal { background:#0e1930; border:1px solid rgba(255,255,255,.12); border-radius:20px; padding:28px; width:100%; max-width:460px; }
+    .modal h2{ margin:0 0 18px; }
+    .form-group{ margin-bottom:14px; }
+    .form-group label{ display:block; font-size:.85rem; opacity:.75; margin-bottom:5px; }
+    .form-group textarea { width:100%; padding:10px 14px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.15); border-radius:10px; color:#fff; font-size:.9rem; box-sizing:border-box; resize:vertical; min-height:80px; }
+    .form-group textarea::placeholder{ color:rgba(255,255,255,.4); }
+    .stars-input{ display:flex; gap:8px; }
+    .star-btn{ background:none; border:none; font-size:1.6rem; cursor:pointer; color:rgba(255,255,255,.3); transition:.1s; }
+    .star-btn.active{ color:#ffe493; }
+    .modal-footer{ display:flex; justify-content:flex-end; gap:10px; margin-top:18px; }
+    .btn-cancel{ padding:10px 20px; background:rgba(255,255,255,.08); color:#fff; border:1px solid rgba(255,255,255,.12); border-radius:10px; cursor:pointer; font-weight:600; }
+    .btn-confirm{ padding:10px 24px; background:rgba(255,0,84,.25); border:1px solid rgba(255,0,84,.45); color:#fff; border-radius:10px; cursor:pointer; font-weight:600; }
+    #reviewMsg{ font-size:.85rem; margin-bottom:10px; display:none; }
+  </style>
 </head>
-
 <body>
+  <header>
+    <div class="nav">
+      <a class="brand" href="../index.html">AutoBid</a>
+      <span class="badge">Customer</span>
+      <span style="flex:1"></span>
+      <a href="./customerdashboard.html">Dashboard</a>
+      <a href="./browse.html">Browse</a>
+      <a href="./profile.html">Profile</a>
+      <a href="../Auth/login.html" onclick="logout()">Logout</a>
+    </div>
+  </header>
 
-<div class="container">
-  <div class="card">
-    <h2>My Bookings</h2>
+  <main class="container">
+    <div class="card">
+      <h1>My Bookings</h1>
+      <p class="muted small">View and manage your service bookings.</p>
+    </div>
 
-    <p>Feb 20 — Auto Pro Mobile — Confirmed</p>
+    <div class="list" id="bookingsList">
+      <div class="empty">Loading bookings...</div>
+    </div>
+  </main>
 
-    <a href="customerdashboard.html">Back to Dashboard</a>
+  <!-- Review modal -->
+  <div class="modal-overlay" id="reviewModal" onclick="handleOverlay(event)">
+    <div class="modal">
+      <h2>Leave a Review</h2>
+      <div id="reviewServiceName" style="font-weight:800; margin-bottom:16px;"></div>
+      <div id="reviewMsg"></div>
+      <input type="hidden" id="reviewServiceId">
+      <div class="form-group">
+        <label>Rating</label>
+        <div class="stars-input" id="starsInput">
+          <button class="star-btn" onclick="setRating(1)">★</button>
+          <button class="star-btn" onclick="setRating(2)">★</button>
+          <button class="star-btn" onclick="setRating(3)">★</button>
+          <button class="star-btn" onclick="setRating(4)">★</button>
+          <button class="star-btn" onclick="setRating(5)">★</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Comment</label>
+        <textarea id="reviewComment" placeholder="Share your experience..."></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeReviewModal()">Cancel</button>
+        <button class="btn-confirm" onclick="submitReview()">Submit Review</button>
+      </div>
+    </div>
   </div>
-</div>
 
+<script>
+  const API = "http://localhost:8080";
+  let currentUser = null;
+  let selectedRating = 0;
+
+  function logout() { localStorage.removeItem("currentUser"); }
+  function esc(v) { return String(v ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
+
+  function init() {
+    const stored = localStorage.getItem("currentUser");
+    if (!stored) { location.href = "../Auth/login.html"; return; }
+    currentUser = JSON.parse(stored);
+    loadBookings();
+  }
+
+  async function loadBookings() {
+    const list = document.getElementById("bookingsList");
+    try {
+      const res = await fetch(`${API}/api/bookings`);
+      const all = res.ok ? await res.json() : [];
+      const mine = all.filter(b => b.customer && b.customer.id === currentUser.id);
+
+      if (!mine.length) {
+        list.innerHTML = `<div class="empty">No bookings yet. <a href="./browse.html" style="color:#e11d48;">Browse services</a></div>`;
+        return;
+      }
+
+      list.innerHTML = mine.map(b => `
+        <div class="list-item">
+          <div>
+            <div style="font-weight:800; font-size:1rem;">${esc(b.service?.title || "Service")}</div>
+            <div class="muted small">Provider: ${esc(b.service?.provider?.name || "N/A")}</div>
+            <div class="muted small">📅 ${esc(b.date || "No date")} ${b.time ? "• ⏰ " + esc(b.time) : ""}</div>
+            <div class="muted small">Category: ${esc(b.service?.category || "N/A")} • $${b.service?.price ?? 0}</div>
+            <div class="item-actions">
+              <button class="btn btn-primary" onclick='openReviewModal(${JSON.stringify(b.service)})'>Leave Review</button>
+              <button class="btn btn-danger" onclick="cancelBooking(${b.id})">Cancel</button>
+            </div>
+          </div>
+          <span class="pill ok">Booked</span>
+        </div>`).join("");
+    } catch(e) {
+      list.innerHTML = `<div class="empty">Error loading bookings: ${esc(e.message)}</div>`;
+    }
+  }
+
+  async function cancelBooking(id) {
+    if (!confirm("Cancel this booking?")) return;
+    try {
+      const res = await fetch(`${API}/api/bookings/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error(await res.text());
+      loadBookings();
+    } catch(e) {
+      alert("Error: " + e.message);
+    }
+  }
+
+  function setRating(n) {
+    selectedRating = n;
+    document.querySelectorAll(".star-btn").forEach((btn, i) => {
+      btn.classList.toggle("active", i < n);
+    });
+  }
+
+  function openReviewModal(service) {
+    if (!service) return;
+    document.getElementById("reviewServiceId").value = service.id;
+    document.getElementById("reviewServiceName").textContent = service.title || "Service";
+    document.getElementById("reviewComment").value = "";
+    selectedRating = 0;
+    document.querySelectorAll(".star-btn").forEach(b => b.classList.remove("active"));
+    const msg = document.getElementById("reviewMsg");
+    msg.style.display = "none"; msg.textContent = "";
+    document.getElementById("reviewModal").classList.add("open");
+  }
+
+  function closeReviewModal() {
+    document.getElementById("reviewModal").classList.remove("open");
+  }
+
+  function handleOverlay(e) {
+    if (e.target === document.getElementById("reviewModal")) closeReviewModal();
+  }
+
+  async function submitReview() {
+    const serviceId = document.getElementById("reviewServiceId").value;
+    const comment = document.getElementById("reviewComment").value.trim();
+    const msg = document.getElementById("reviewMsg");
+
+    if (!selectedRating) {
+      msg.style.display = "block"; msg.style.color = "#ffb4b4";
+      msg.textContent = "Please select a rating."; return;
+    }
+    if (!comment) {
+      msg.style.display = "block"; msg.style.color = "#ffb4b4";
+      msg.textContent = "Please write a comment."; return;
+    }
+
+    try {
+      const res = await fetch(`${API}/api/reviews`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          rating: selectedRating,
+          comment,
+          customer: { id: currentUser.id },
+          service: { id: parseInt(serviceId) }
+        })
+      });
+      if (!res.ok) throw new Error(await res.text());
+      msg.style.display = "block"; msg.style.color = "#a8f0cc";
+      msg.textContent = "Review submitted!";
+      setTimeout(() => closeReviewModal(), 1200);
+    } catch(e) {
+      msg.style.display = "block"; msg.style.color = "#ffb4b4";
+      msg.textContent = "Error: " + e.message;
+    }
+  }
+
+  init();
+</script>
 </body>
 </html>

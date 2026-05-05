@@ -1,29 +1,294 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <title>Browse Services</title>
-  <link rel="stylesheet" href="../css/styles.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AutoBid • Browse Services</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <style>
+    .btn { display:inline-block; text-align:center; text-decoration:none; padding:10px 16px; border-radius:12px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.06); color:inherit; font-weight:600; cursor:pointer; font-size:.9rem; }
+    .btn:hover{ filter:brightness(1.08); }
+    .btn-primary{ background:rgba(255,0,84,.20); border-color:rgba(255,0,84,.35); }
+    .muted{ opacity:.8; }
+    .small{ font-size:.9rem; }
+    .services-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; margin-top:20px; }
+    .service-card { background:rgba(0,0,0,.35); border:1px solid rgba(255,255,255,.10); border-radius:16px; padding:20px; backdrop-filter:blur(10px); display:flex; flex-direction:column; gap:10px; }
+    .service-card h3 { margin:0; font-size:1.1rem; }
+    .service-meta { display:flex; gap:8px; flex-wrap:wrap; }
+    .tag { font-size:.8rem; padding:3px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); }
+    .tag.avail { border-color:rgba(0,255,160,.25); background:rgba(0,255,160,.10); color:#a8f0cc; }
+    .tag.unavail { border-color:rgba(255,80,80,.25); background:rgba(255,80,80,.10); color:#ffb8b8; }
+    .tag.deadline { border-color:rgba(255,210,0,.25); background:rgba(255,210,0,.10); color:#ffe493; }
+    .price { font-size:1.3rem; font-weight:800; }
+    .card-actions { display:flex; gap:8px; margin-top:auto; }
+    .filters { display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; align-items:center; }
+    .filters input, .filters select { padding:8px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.07); color:#fff; font-size:.9rem; }
+    .filters input::placeholder{ color:rgba(255,255,255,.45); }
+    .empty{ opacity:.55; font-style:italic; margin-top:20px; }
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:1000; align-items:center; justify-content:center; }
+    .modal-overlay.open{ display:flex; }
+    .modal { background:#0e1930; border:1px solid rgba(255,255,255,.12); border-radius:20px; padding:28px; width:100%; max-width:460px; }
+    .modal h2{ margin:0 0 18px; }
+    .form-group{ margin-bottom:14px; }
+    .form-group label{ display:block; font-size:.85rem; opacity:.75; margin-bottom:5px; }
+    .form-group input { width:100%; padding:10px 14px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.15); border-radius:10px; color:#fff; font-size:.9rem; box-sizing:border-box; }
+    .form-group input[type="date"]::-webkit-calendar-picker-indicator,
+    .form-group input[type="time"]::-webkit-calendar-picker-indicator { filter:invert(1); opacity:.6; cursor:pointer; }
+    .deadline-note { font-size:.8rem; color:#ffe493; margin-top:4px; }
+    .modal-footer{ display:flex; justify-content:flex-end; gap:10px; margin-top:18px; }
+    .btn-cancel{ padding:10px 20px; background:rgba(255,255,255,.08); color:#fff; border:1px solid rgba(255,255,255,.12); border-radius:10px; cursor:pointer; font-weight:600; }
+    .btn-confirm{ padding:10px 24px; background:rgba(255,0,84,.25); border:1px solid rgba(255,0,84,.45); color:#fff; border-radius:10px; cursor:pointer; font-weight:600; }
+    #bookMsg{ font-size:.85rem; margin-bottom:10px; display:none; }
+  </style>
 </head>
-
 <body>
+  <header>
+    <div class="nav">
+      <a class="brand" href="../index.html">AutoBid</a>
+      <span class="badge">Customer</span>
+      <span style="flex:1"></span>
+      <a href="./customerdashboard.html">Dashboard</a>
+      <a href="./mybookings.html">Bookings</a>
+      <a href="./profile.html">Profile</a>
+      <a href="../Auth/login.html" onclick="logout()">Logout</a>
+    </div>
+  </header>
 
-<header>
-  <div class="nav">
-    <a class="brand" href="customerdashboard.html">AutoBid</a>
+  <main class="container">
+    <div class="card">
+      <h1>Browse Services</h1>
+      <p class="muted small">Find and book automotive services. Services you've already booked are hidden.</p>
+
+      <div class="filters">
+        <input type="text" id="searchInput" placeholder="Search by title..." oninput="filterServices()">
+        <select id="categoryFilter" onchange="filterServices()">
+          <option value="">All Categories</option>
+          <option value="Mechanic">Mechanic</option>
+          <option value="Detailing">Detailing</option>
+          <option value="Repair">Repair</option>
+          <option value="Other">Other</option>
+        </select>
+        <select id="availFilter" onchange="filterServices()">
+          <option value="">Any Availability</option>
+          <option value="Available">Available</option>
+          <option value="Unavailable">Unavailable</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="services-grid" id="servicesGrid">
+      <div class="empty">Loading services...</div>
+    </div>
+  </main>
+
+  <!-- Book modal -->
+  <div class="modal-overlay" id="bookModal" onclick="handleOverlay(event)">
+    <div class="modal">
+      <h2>Book Service</h2>
+      <div id="bookServiceName" style="font-weight:800; margin-bottom:4px; font-size:1.1rem;"></div>
+      <!-- deadline reminder shown inside modal -->
+      <div id="bookDeadlineNote" class="deadline-note" style="margin-bottom:14px;"></div>
+      <div id="bookMsg"></div>
+      <input type="hidden" id="bookServiceId">
+      <input type="hidden" id="bookDeadline">
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" id="bookDate">
+      </div>
+      <div class="form-group">
+        <label>Time</label>
+        <input type="time" id="bookTime">
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeBookModal()">Cancel</button>
+        <button class="btn-confirm" onclick="confirmBooking()">Confirm Booking</button>
+      </div>
+    </div>
   </div>
-</header>
 
-<div class="container">
-  <div class="card">
-    <h2>Browse Services</h2>
+<script>
+  const API = "http://localhost:8080";
+  let currentUser = null;
+  let allServices = [];
+  let bookedServiceIds = new Set();
 
-    <p>Mobile Detail — $150 ⭐4.8</p>
-    <a href="provider-details.html">View Provider</a><br><br>
+  function logout() { localStorage.removeItem("currentUser"); }
+  function esc(v) { return String(v ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
 
-    <a href="customerdashboard.html">Back to Dashboard</a>
-  </div>
-</div>
+  function init() {
+    const stored = localStorage.getItem("currentUser");
+    if (!stored) { location.href = "../Auth/login.html"; return; }
+    currentUser = JSON.parse(stored);
+    loadAll();
+  }
 
+  async function loadAll() {
+    const grid = document.getElementById("servicesGrid");
+    try {
+      // Load services and bookings in parallel
+      const [servicesRes, bookingsRes] = await Promise.all([
+        fetch(`${API}/api/services`),
+        fetch(`${API}/api/bookings`)
+      ]);
+
+      allServices = servicesRes.ok ? await servicesRes.json() : [];
+      const allBookings = bookingsRes.ok ? await bookingsRes.json() : [];
+
+      // Build set of service IDs this customer has already booked
+      bookedServiceIds = new Set(
+        allBookings
+          .filter(b => b.customer && b.customer.id === currentUser.id)
+          .map(b => b.service?.id)
+          .filter(Boolean)
+      );
+
+      renderServices(allServices);
+    } catch(e) {
+      grid.innerHTML = `<div class="empty">Error loading services: ${esc(e.message)}</div>`;
+    }
+  }
+
+  function filterServices() {
+    const search = document.getElementById("searchInput").value.toLowerCase();
+    const cat = document.getElementById("categoryFilter").value;
+    const avail = document.getElementById("availFilter").value;
+    const filtered = allServices.filter(s =>
+      (!search || (s.title || "").toLowerCase().includes(search)) &&
+      (!cat || s.category === cat) &&
+      (!avail || s.availability === avail)
+    );
+    renderServices(filtered);
+  }
+
+  function renderServices(services) {
+    const grid = document.getElementById("servicesGrid");
+
+    // Hide services the customer already booked
+    const visible = services.filter(s => !bookedServiceIds.has(s.id));
+
+    if (!visible.length) {
+      grid.innerHTML = `<div class="empty">No services available.</div>`;
+      return;
+    }
+
+    grid.innerHTML = visible.map(s => {
+      const avail = s.availability === "Available";
+
+      // Deadline info
+      let deadlineStr = null;
+      let deadlineTag = "";
+      if (s.serviceDate) {
+        const dl = new Date(s.serviceDate);
+        deadlineStr = dl.toLocaleString([], { dateStyle:"medium", timeStyle:"short" });
+        deadlineTag = `<span class="tag deadline">⏰ Book by ${deadlineStr}</span>`;
+      }
+
+      return `
+        <div class="service-card">
+          <h3>${esc(s.title)}</h3>
+          <div class="service-meta">
+            <span class="tag">${esc(s.category)}</span>
+            <span class="tag ${avail ? "avail" : "unavail"}">${esc(s.availability)}</span>
+            ${deadlineTag}
+          </div>
+          <div class="muted small">${esc(s.description || "No description provided.")}</div>
+          <div class="muted small">Provider: ${esc(s.provider?.name || "N/A")}</div>
+          <div class="price">$${s.price ?? 0}</div>
+          <div class="card-actions">
+            ${avail
+              ? `<button class="btn btn-primary" onclick='openBookModal(${JSON.stringify(s)})'>Book Now</button>`
+              : `<button class="btn" disabled style="opacity:.4;cursor:not-allowed;">Unavailable</button>`
+            }
+          </div>
+        </div>`;
+    }).join("");
+  }
+
+  function openBookModal(service) {
+    document.getElementById("bookServiceId").value = service.id;
+    document.getElementById("bookServiceName").textContent = service.title;
+
+    // Store the deadline so confirmBooking() can validate against it
+    const deadline = service.serviceDate || "";
+    document.getElementById("bookDeadline").value = deadline;
+
+    // Show deadline reminder in modal
+    const noteEl = document.getElementById("bookDeadlineNote");
+    if (deadline) {
+      const dl = new Date(deadline);
+      noteEl.textContent = `⚠️ Must be booked for a date/time on or before ${dl.toLocaleString([], { dateStyle:"medium", timeStyle:"short" })}`;
+    } else {
+      noteEl.textContent = "";
+    }
+
+    document.getElementById("bookDate").value = "";
+    document.getElementById("bookTime").value = "";
+    const msg = document.getElementById("bookMsg");
+    msg.style.display = "none"; msg.textContent = "";
+    document.getElementById("bookModal").classList.add("open");
+  }
+
+  function closeBookModal() {
+    document.getElementById("bookModal").classList.remove("open");
+  }
+
+  function handleOverlay(e) {
+    if (e.target === document.getElementById("bookModal")) closeBookModal();
+  }
+
+  async function confirmBooking() {
+    const serviceId = document.getElementById("bookServiceId").value;
+    const date = document.getElementById("bookDate").value;
+    const time = document.getElementById("bookTime").value;
+    const deadline = document.getElementById("bookDeadline").value;
+    const msg = document.getElementById("bookMsg");
+
+    if (!date || !time) {
+      msg.style.display = "block"; msg.style.color = "#ffb4b4";
+      msg.textContent = "Please select a date and time."; return;
+    }
+
+    // Validate against deadline: the customer's chosen datetime must be <= serviceDate
+    if (deadline) {
+      const chosenDT = new Date(`${date}T${time}`);
+      const deadlineDT = new Date(deadline);
+      if (chosenDT > deadlineDT) {
+        msg.style.display = "block"; msg.style.color = "#ffb4b4";
+        msg.textContent = `Booking date/time cannot be after the deadline: ${deadlineDT.toLocaleString([], { dateStyle:"medium", timeStyle:"short" })}.`;
+        return;
+      }
+    }
+
+    try {
+      const res = await fetch(`${API}/api/bookings`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          date, time,
+          customer: { id: currentUser.id },
+          service: { id: parseInt(serviceId) }
+        })
+      });
+      if (!res.ok) throw new Error(await res.text());
+
+      msg.style.display = "block"; msg.style.color = "#a8f0cc";
+      msg.textContent = "Booking confirmed!";
+
+      // Add to booked set so it disappears from the grid immediately
+      bookedServiceIds.add(parseInt(serviceId));
+
+      setTimeout(() => {
+        closeBookModal();
+        filterServices(); // re-render to hide the now-booked service
+      }, 1000);
+
+    } catch(e) {
+      msg.style.display = "block"; msg.style.color = "#ffb4b4";
+      msg.textContent = "Error: " + e.message;
+    }
+  }
+
+  init();
+</script>
 </body>
 </html>
