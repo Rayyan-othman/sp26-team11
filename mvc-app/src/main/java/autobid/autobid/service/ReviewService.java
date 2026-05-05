@@ -5,25 +5,25 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import autobid.autobid.dto.ReviewRequest;
-import autobid.autobid.entity.Customer;
 import autobid.autobid.entity.Review;
 import autobid.autobid.entity.ServiceEntity;
-import autobid.autobid.repository.CustomerRepository;
+import autobid.autobid.entity.User;
 import autobid.autobid.repository.ReviewRepository;
 import autobid.autobid.repository.ServiceRepository;
+import autobid.autobid.repository.UserRepository;
 
 @Service
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
-    private final CustomerRepository customerRepository;
+    private final UserRepository userRepository;
     private final ServiceRepository serviceRepository;
 
     public ReviewService(ReviewRepository reviewRepository,
-                         CustomerRepository customerRepository,
+                         UserRepository userRepository,
                          ServiceRepository serviceRepository) {
         this.reviewRepository = reviewRepository;
-        this.customerRepository = customerRepository;
+        this.userRepository = userRepository;
         this.serviceRepository = serviceRepository;
     }
 
@@ -32,7 +32,7 @@ public class ReviewService {
     }
 
     public Review createReview(ReviewRequest request) {
-        Customer customer = customerRepository.findById(request.getCustomerId())
+        User customer = userRepository.findById(request.getCustomerId())
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
 
         ServiceEntity service = serviceRepository.findById(request.getServiceId())

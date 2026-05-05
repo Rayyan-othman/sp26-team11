@@ -9,26 +9,33 @@ for on-site automotive services booked directly to their location.
 
 This application follows the **Model-View-Controller (MVC)** pattern:
 
-### Models (Entities)
+---
+
+## Models (Entities)
+
 Located in `mvc-app/src/main/java/autobid/autobid/entity/`
 
-- **User.java** – Base entity for authentication; parent class for all roles
-- **Customer.java** – Extends User; manages bookings and reviews
-- **ServiceEntity.java** – Automotive service offered by a provider (e.g., oil change, detailing)
-- **Review.java** – Customer feedback on a completed service with star rating
-- **Reply.java** – Provider response to a customer review
-
-### DTOs
-Located in `mvc-app/src/main/java/autobid/autobid/dto/`
-
-- **AdminStatsResponse.java** – Aggregated platform-wide statistics for the admin dashboard
-- **ProviderStatsResponse.java** – Aggregated performance metrics per provider
-- **ReviewRequest.java** – Request body for submitting a review
-- **ReplyRequest.java** – Request body for submitting a reply
+- **User** – Base entity for all user roles; role field distinguishes Customer, Provider, and Admin
+- **ServiceEntity** – Automotive service offered by a provider (e.g., oil change, detailing)
+- **Booking** – A scheduled appointment between a customer and a service
+- **Review** – Customer feedback on a completed service with a star rating
+- **Reply** – Provider response to a customer review
 
 ---
 
-### Views (Templates)
+## DTOs
+
+Located in `mvc-app/src/main/java/autobid/autobid/dto/`
+
+- **AdminStatsResponse** – Aggregated platform-wide statistics for the admin dashboard
+- **ProviderStatsResponse** – Aggregated performance metrics per provider
+- **ReviewRequest** – Request body for submitting a review
+- **ReplyRequest** – Request body for submitting a reply
+
+---
+
+## Views (Templates)
+
 Located in `mvc-app/src/main/resources/static/`
 
 **Auth Pages:**
@@ -61,11 +68,12 @@ Located in `mvc-app/src/main/resources/static/`
 
 ---
 
-### Controllers
+## Controllers
+
 Located in `mvc-app/src/main/java/autobid/autobid/controller/`
 
 - `AdminController.java` – Admin operations: user management, service moderation, statistics
-- `CustomerApiController.java` – Customer profile and account management
+- `BookingApiController.java` – Booking creation, retrieval, and status management
 - `ProviderController.java` – Provider profile and service management
 - `ServiceApiController.java` – Service listing CRUD operations
 - `ReviewApiController.java` – Review submission and retrieval
@@ -73,27 +81,31 @@ Located in `mvc-app/src/main/java/autobid/autobid/controller/`
 
 ---
 
-### Services
+## Services
+
 Located in `mvc-app/src/main/java/autobid/autobid/service/`
 
 Business logic layer providing CRUD operations and domain-specific functionality:
+
 - `AdminService.java` – Administrative operations including account restriction and moderation
-- `CustomerService.java` – Customer registration, profile updates, account management
-- `ProviderService.java` – Provider registration, profile updates, qualification management
+- `BookingService.java` – Booking lifecycle management (create, confirm, cancel)
+- `ProviderService.java` – Provider profile updates and qualification management
 - `ServiceService.java` – Service listing creation, updates, and deletion
 - `ReviewService.java` – Review submission and retrieval with provider associations
 
 ---
 
-### Repositories
+## Repositories
+
 Located in `mvc-app/src/main/java/autobid/autobid/repository/`
 
 Data access layer interfacing with the database via Spring Data JPA:
-- `CustomerRepository.java` – Customer lookups and profile queries
+
+- `UserRepository.java` – User authentication, role lookups, and profile queries
+- `BookingRepository.java` – Booking queries by customer, provider, and status
 - `ServiceRepository.java` – Service queries (by provider, category, availability)
 - `ReviewRepository.java` – Review queries with filtering by provider and rating
 - `ReplyRepository.java` – Reply retrieval by review association
-- `UserRepository.java` – Base user authentication and role lookups
 
 ---
 
@@ -136,14 +148,14 @@ Data access layer interfacing with the database via Spring Data JPA:
 ---
 
 ## Session Management
-- Uses `HttpSession` for storing `customerId`, `providerId`, and `adminId`
+- Uses `HttpSession` for storing `userId`, `providerId`, and `adminId`
 - Automatic redirect to sign-in for unauthenticated access to protected pages
 - Session validation applied on all sensitive endpoints
 
 ---
 
 ## Database Relationships
-- **One-to-Many:** Provider → Services, Customer → Bookings, Customer → Reviews, Provider → Replies
-- **Many-to-One:** Review → Customer / ServiceEntity, Reply → Review / Provider
+- **One-to-Many:** Provider → Services, User → Bookings, User → Reviews, Provider → Replies
+- **Many-to-One:** Review → User / ServiceEntity, Reply → Review / Provider
 - **Cascade Operations:** Automatic cascading for related entity deletions and updates
 - **JsonIgnoreProperties:** Prevents circular reference serialization issues across related entities

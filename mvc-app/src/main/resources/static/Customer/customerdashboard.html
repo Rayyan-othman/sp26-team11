@@ -6,95 +6,32 @@
   <title>AutoBid • Customer Dashboard</title>
   <link rel="stylesheet" href="../css/styles.css" />
   <style>
-    .dash-grid{
-      display:grid;
-      grid-template-columns: 1.4fr .9fr;
-      gap:16px;
-    }
-    @media (max-width: 900px){
-      .dash-grid{ grid-template-columns: 1fr; }
-    }
-    .actions{
-      display:grid;
-      grid-template-columns: repeat(3, minmax(0,1fr));
-      gap:12px;
-      margin-top: 12px;
-    }
-    @media (max-width: 650px){
-      .actions{ grid-template-columns: 1fr; }
-    }
-    .btn{
-      display:inline-block;
-      text-align:center;
-      text-decoration:none;
-      padding:12px 14px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      color: inherit;
-      font-weight: 600;
-    }
-    .btn:hover{ filter: brightness(1.08); }
-    .btn-primary{
-      background: rgba(255,0,84,.20);
-      border-color: rgba(255,0,84,.35);
-    }
+    .dash-grid { display:grid; grid-template-columns:1.4fr .9fr; gap:16px; }
+    @media(max-width:900px){ .dash-grid{ grid-template-columns:1fr; } }
+    .actions { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:12px; }
+    @media(max-width:650px){ .actions{ grid-template-columns:1fr; } }
+    .btn { display:inline-block; text-align:center; text-decoration:none; padding:12px 14px; border-radius:12px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.06); color:inherit; font-weight:600; cursor:pointer; }
+    .btn:hover{ filter:brightness(1.08); }
+    .btn-primary { background:rgba(255,0,84,.20); border-color:rgba(255,0,84,.35); }
+    .btn-danger { background:rgba(220,53,69,.25); border-color:rgba(220,53,69,.45); }
     .muted{ opacity:.8; }
-    .kpi-row{
-      display:grid;
-      grid-template-columns: repeat(3, minmax(0,1fr));
-      gap:12px;
-      margin-top:12px;
-    }
-    @media (max-width: 650px){
-      .kpi-row{ grid-template-columns: 1fr; }
-    }
-    .kpi{
-      padding:12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.18);
-    }
+    .small{ font-size:.9rem; }
+    .kpi-row { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:12px; }
+    @media(max-width:650px){ .kpi-row{ grid-template-columns:1fr; } }
+    .kpi { padding:12px; border-radius:14px; border:1px solid rgba(255,255,255,.10); background:rgba(0,0,0,.18); }
     .kpi .label{ font-size:.9rem; opacity:.8; }
     .kpi .value{ font-size:1.35rem; font-weight:800; margin-top:4px; }
-    .list{
-      margin-top:10px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-    .list-item{
-      padding:12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.18);
-      display:flex;
-      gap:10px;
-      justify-content:space-between;
-      align-items:flex-start;
-    }
-    .pill{
-      display:inline-block;
-      font-size:.8rem;
-      padding:4px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.15);
-      background: rgba(255,255,255,.06);
-      white-space:nowrap;
-    }
-    .pill.ok{ border-color: rgba(0,255,160,.25); background: rgba(0,255,160,.12); }
-    .pill.pending{ border-color: rgba(255,210,0,.25); background: rgba(255,210,0,.12); }
-    .right-col .card{ position: sticky; top: 16px; }
-    .small-link{
-      display:inline-block;
-      margin-top:8px;
-      text-decoration:none;
-      opacity:.9;
-    }
-    .small-link:hover{ text-decoration: underline; }
+    .list { margin-top:10px; display:flex; flex-direction:column; gap:10px; }
+    .list-item { padding:12px; border-radius:14px; border:1px solid rgba(255,255,255,.10); background:rgba(0,0,0,.18); display:flex; gap:10px; justify-content:space-between; align-items:flex-start; }
+    .pill { display:inline-block; font-size:.8rem; padding:4px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); white-space:nowrap; }
+    .pill.ok{ border-color:rgba(0,255,160,.25); background:rgba(0,255,160,.12); }
+    .pill.pending{ border-color:rgba(255,210,0,.25); background:rgba(255,210,0,.12); }
+    .right-col .card{ position:sticky; top:16px; }
+    .small-link { display:inline-block; margin-top:8px; text-decoration:none; opacity:.9; color:#e11d48; }
+    .small-link:hover{ text-decoration:underline; }
+    .empty{ opacity:.55; font-style:italic; }
   </style>
 </head>
-
 <body>
   <header>
     <div class="nav">
@@ -104,33 +41,33 @@
       <a href="./browse.html">Browse</a>
       <a href="./mybookings.html">Bookings</a>
       <a href="./profile.html">Profile</a>
-      <a href="../Auth/login.html">Logout</a>
+      <a href="../Auth/login.html" onclick="logout()">Logout</a>
     </div>
   </header>
 
   <main class="container">
     <div class="card">
-      <h1>Welcome back, <span class="muted">Gamal</span></h1>
-      <p class="small muted">UI-only prototype with sample data.</p>
+      <h1>Welcome back, <span class="muted" id="welcomeName">...</span></h1>
+      <p class="small muted">Your AutoBid customer dashboard.</p>
 
       <div class="actions">
         <a class="btn btn-primary" href="./browse.html">Browse Services</a>
-        <a class="btn" href="./book.html">Book Appointment</a>
-        <a class="btn" href="./mybookings.html">View My Bookings</a>
+        <a class="btn" href="./mybookings.html">My Bookings</a>
+        <a class="btn" href="./profile.html">Edit Profile</a>
       </div>
 
       <div class="kpi-row">
         <div class="kpi">
-          <div class="label">Upcoming bookings</div>
-          <div class="value">1</div>
+          <div class="label">Total Bookings</div>
+          <div class="value" id="kpiBookings">—</div>
         </div>
         <div class="kpi">
-          <div class="label">Saved providers</div>
-          <div class="value">2</div>
+          <div class="label">Reviews Written</div>
+          <div class="value" id="kpiReviews">—</div>
         </div>
         <div class="kpi">
-          <div class="label">Avg provider rating</div>
-          <div class="value">4.7★</div>
+          <div class="label">Available Services</div>
+          <div class="value" id="kpiServices">—</div>
         </div>
       </div>
     </div>
@@ -138,80 +75,30 @@
     <div class="dash-grid" style="margin-top:16px;">
       <section>
         <div class="card">
-          <h2>Upcoming Appointment</h2>
-
-          <div class="list-item">
-            <div>
-              <div style="font-weight:800;">Auto Pro Mobile • Full Detail</div>
-              <div class="muted">Thu Feb 19 • 5:00 PM • On-site</div>
-              <div class="muted">Address: 123 Main St, NY</div>
-              <a class="small-link" href="./confirmation.html">View confirmation</a>
-            </div>
-            <div>
-              <span class="pill ok">Confirmed</span>
-            </div>
+          <h2>My Recent Bookings</h2>
+          <div class="list" id="bookingsList">
+            <div class="empty">Loading bookings...</div>
           </div>
-
-          <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
-            <a class="btn" href="./mybookings.html">Manage booking</a>
-            <a class="btn" href="./provider.html">Provider details</a>
+          <div style="margin-top:12px;">
+            <a class="btn" href="./mybookings.html">View all bookings</a>
           </div>
         </div>
 
         <div class="card" style="margin-top:16px;">
-          <h2>Recent Activity</h2>
-
-          <div class="list">
-            <div class="list-item">
-              <div>
-                <div style="font-weight:700;">You booked “Full Detail”</div>
-                <div class="muted">Auto Pro Mobile • just now</div>
-              </div>
-              <span class="pill pending">New</span>
-            </div>
-
-            <div class="list-item">
-              <div>
-                <div style="font-weight:700;">You viewed “Mobile Oil Change”</div>
-                <div class="muted">Mechanic On-Wheels • earlier</div>
-              </div>
-              <span class="pill">Info</span>
-            </div>
-
-            <div class="list-item">
-              <div>
-                <div style="font-weight:700;">Profile updated</div>
-                <div class="muted">Phone number • yesterday</div>
-              </div>
-              <span class="pill">Saved</span>
-            </div>
+          <h2>My Reviews</h2>
+          <div class="list" id="reviewsList">
+            <div class="empty">Loading reviews...</div>
           </div>
         </div>
       </section>
 
       <aside class="right-col">
         <div class="card">
-          <h2>Suggested Services</h2>
-          <p class="muted small">Based on your location and recent views.</p>
-
-          <div class="list">
-            <div class="list-item">
-              <div>
-                <div style="font-weight:800;">Mobile Oil Change</div>
-                <div class="muted">From $60 • 4.8★</div>
-              </div>
-              <a class="btn" href="./browse.html">View</a>
-            </div>
-
-            <div class="list-item">
-              <div>
-                <div style="font-weight:800;">Brake Pad Replacement</div>
-                <div class="muted">From $220 • 4.6★</div>
-              </div>
-              <a class="btn" href="./browse.html">View</a>
-            </div>
+          <h2>Available Services</h2>
+          <p class="muted small">Browse and book a service.</p>
+          <div class="list" id="servicesList">
+            <div class="empty">Loading services...</div>
           </div>
-
           <div style="margin-top:12px;">
             <a class="btn btn-primary" href="./browse.html">See all services</a>
           </div>
@@ -219,5 +106,82 @@
       </aside>
     </div>
   </main>
+
+<script>
+  const API = "http://localhost:8080";
+  let currentUser = null;
+
+  function logout() { localStorage.removeItem("currentUser"); }
+
+  function init() {
+    const stored = localStorage.getItem("currentUser");
+    if (!stored) { location.href = "../Auth/login.html"; return; }
+    currentUser = JSON.parse(stored);
+    if (currentUser.role !== "CUSTOMER") { location.href = "../Auth/login.html"; return; }
+    document.getElementById("welcomeName").textContent = currentUser.name || "Customer";
+    loadAll();
+  }
+
+  async function loadAll() {
+    const [bookings, reviews, services] = await Promise.all([
+      fetch(`${API}/api/bookings`).then(r => r.ok ? r.json() : []),
+      fetch(`${API}/api/reviews`).then(r => r.ok ? r.json() : []),
+      fetch(`${API}/api/services`).then(r => r.ok ? r.json() : [])
+    ]);
+
+    const myBookings = bookings.filter(b => b.customer && b.customer.id === currentUser.id);
+    const myReviews = reviews.filter(r => r.customer && r.customer.id === currentUser.id);
+
+    document.getElementById("kpiBookings").textContent = myBookings.length;
+    document.getElementById("kpiReviews").textContent = myReviews.length;
+    document.getElementById("kpiServices").textContent = services.length;
+
+    renderBookings(myBookings.slice(0, 3));
+    renderReviews(myReviews.slice(0, 3));
+    renderServices(services.slice(0, 3));
+  }
+
+  function renderBookings(bookings) {
+    const el = document.getElementById("bookingsList");
+    if (!bookings.length) { el.innerHTML = `<div class="empty">No bookings yet. <a class="small-link" href="./browse.html">Browse services</a></div>`; return; }
+    el.innerHTML = bookings.map(b => `
+      <div class="list-item">
+        <div>
+          <div style="font-weight:800;">${esc(b.service?.title || "Service")}</div>
+          <div class="muted small">${esc(b.date || "")} ${b.time ? "• " + esc(b.time) : ""}</div>
+        </div>
+        <span class="pill ok">Booked</span>
+      </div>`).join("");
+  }
+
+  function renderReviews(reviews) {
+    const el = document.getElementById("reviewsList");
+    if (!reviews.length) { el.innerHTML = `<div class="empty">No reviews yet.</div>`; return; }
+    el.innerHTML = reviews.map(r => `
+      <div class="list-item">
+        <div>
+          <div style="font-weight:700;">${esc(r.service?.title || "Service")}</div>
+          <div class="muted small">${"★".repeat(r.rating || 0)}${"☆".repeat(5-(r.rating||0))} — "${esc(r.comment || "")}"</div>
+        </div>
+      </div>`).join("");
+  }
+
+  function renderServices(services) {
+    const el = document.getElementById("servicesList");
+    if (!services.length) { el.innerHTML = `<div class="empty">No services available.</div>`; return; }
+    el.innerHTML = services.map(s => `
+      <div class="list-item">
+        <div>
+          <div style="font-weight:800;">${esc(s.title || "")}</div>
+          <div class="muted small">$${s.price ?? 0} • ${esc(s.category || "")}</div>
+        </div>
+        <a class="btn" href="./browse.html">View</a>
+      </div>`).join("");
+  }
+
+  function esc(v) { return String(v ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
+
+  init();
+</script>
 </body>
 </html>

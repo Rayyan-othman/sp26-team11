@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AutoBid | My Bookings</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body { font-family: Arial, sans-serif; background: linear-gradient(180deg, #081223 0%, #0b1220 100%); color: #e8edf7; }
+        .layout { display: flex; min-height: 100vh; }
+        .sidebar { width: 260px; background: linear-gradient(180deg, #0e1930 0%, #0a1324 100%); border-right: 1px solid rgba(255,255,255,0.08); padding: 24px 18px; display: flex; flex-direction: column; justify-content: space-between; }
+        .brand { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+        .brand-icon { width: 48px; height: 48px; border-radius: 14px; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 24px; }
+        .brand-text h1 { font-size: 18px; margin-bottom: 4px; }
+        .brand-text p { font-size: 14px; color: #a9b7d0; }
+        .nav { display: flex; flex-direction: column; gap: 10px; }
+        .nav a { text-decoration: none; color: #d8e1f0; padding: 14px; border-radius: 14px; transition: 0.2s ease; }
+        .nav a.active, .nav a:hover { background: rgba(255,255,255,0.10); }
+        .user-box, .logout-btn { width: 100%; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.06); color: #e8edf7; padding: 16px; }
+        .user-box { margin-bottom: 14px; }
+        .user-box .name { font-size: 16px; font-weight: bold; margin-bottom: 4px; }
+        .user-box .email { color: #a9b7d0; font-size: 14px; }
+        .logout-btn { cursor: pointer; font-size: 16px; border: 1px solid rgba(255,255,255,0.08); }
+        .main { flex: 1; padding: 28px; }
+        .page-title { font-size: 34px; margin-bottom: 8px; }
+        .page-subtitle { color: #b3c0d7; margin-bottom: 28px; font-size: 16px; }
+        .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 24px; }
+        .card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.18); }
+        .card-title { color: #bfd0ea; font-size: 15px; margin-bottom: 14px; }
+        .card-value { font-size: 48px; font-weight: bold; margin-bottom: 8px; }
+        .card-note { color: #aebdd5; font-size: 14px; }
+        .panel { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.18); margin-bottom: 18px; }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 22px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .panel-header h2 { font-size: 18px; }
+        .small-link { color: #d6e0ef; font-size: 14px; }
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 16px 18px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.08); vertical-align: middle; }
+        th { color: #bcd0ea; font-size: 14px; font-weight: 600; }
+        td { color: #eef3fb; }
+        .footer-note { padding: 16px 22px; color: #aebcd2; font-size: 14px; border-top: 1px solid rgba(255,255,255,0.08); }
+        .empty-state { padding: 26px 18px; color: #b8c8de; }
+        .filters { display: flex; gap: 12px; flex-wrap: wrap; padding: 16px 22px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .filters input, .filters select { padding: 8px 14px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; color: #e8edf7; font-size: 14px; }
+        .filters input::placeholder { color: #6a7d99; }
+        @media (max-width: 900px) { .cards { grid-template-columns: 1fr 1fr; } .layout { flex-direction: column; } .sidebar { width: 100%; } }
+    </style>
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar">
+        <div>
+            <div class="brand">
+                <div class="brand-icon">AB</div>
+                <div class="brand-text"><h1>AutoBid</h1><p>Provider Portal</p></div>
+            </div>
+            <nav class="nav">
+                <a href="./dashboard.html">Dashboard</a>
+                <a href="./dashboard.html#servicesPanel">My Services</a>
+                <a href="#" class="active">Bookings</a>
+                <a href="./dashboard.html#reviewsPanel">Reviews</a>
+                <a href="./profile.html">Profile</a>
+            </nav>
+        </div>
+        <div class="sidebar-footer">
+            <div class="user-box">
+                <div class="name" id="sidebarName">Provider</div>
+                <div class="email" id="sidebarEmail">provider@autobid.com</div>
+            </div>
+            <button class="logout-btn" type="button" onclick="logout()">Log out</button>
+        </div>
+    </aside>
+
+    <main class="main">
+        <h1 class="page-title">Customer Bookings</h1>
+        <p class="page-subtitle">All bookings made by customers for your services.</p>
+
+        <section class="cards">
+            <div class="card">
+                <div class="card-title">Total Bookings</div>
+                <div class="card-value" id="totalBookings">0</div>
+                <div class="card-note">Across all services</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Services Booked</div>
+                <div class="card-value" id="servicesBooked">0</div>
+                <div class="card-note">Unique services</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Unique Customers</div>
+                <div class="card-value" id="uniqueCustomers">0</div>
+                <div class="card-note">Who booked you</div>
+            </div>
+        </section>
+
+        <div class="panel">
+            <div class="panel-header">
+                <h2>All Bookings</h2>
+                <span class="small-link" id="bookingStatus">Loading...</span>
+            </div>
+            <div class="filters">
+                <input type="text" id="searchInput" placeholder="Search by service or customer..." oninput="filterBookings()">
+                <select id="serviceFilter" onchange="filterBookings()">
+                    <option value="">All Services</option>
+                </select>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Service</th>
+                            <th>Customer</th>
+                            <th>Customer Email</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookingsTableBody"></tbody>
+                </table>
+            </div>
+            <div class="footer-note">Bookings are loaded from <code>/api/bookings</code> filtered to your services.</div>
+        </div>
+    </main>
+</div>
+
+<script>
+    const API_BASE = "http://localhost:8080";
+    let currentUser = null;
+    let allBookings = [];
+
+    function esc(v) {
+        return String(v ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+    }
+
+    function logout() {
+        localStorage.removeItem("currentUser");
+        window.location.href = "../Auth/login.html";
+    }
+
+    function init() {
+        const stored = localStorage.getItem("currentUser");
+        if (!stored) { window.location.href = "../Auth/login.html"; return; }
+        currentUser = JSON.parse(stored);
+        if (currentUser.role !== "PROVIDER") { window.location.href = "../Auth/login.html"; return; }
+        document.getElementById("sidebarName").textContent = currentUser.name || "Provider";
+        document.getElementById("sidebarEmail").textContent = currentUser.email || "";
+        loadBookings();
+    }
+
+    async function loadBookings() {
+        const tbody = document.getElementById("bookingsTableBody");
+        const status = document.getElementById("bookingStatus");
+        status.textContent = "Loading...";
+        try {
+            const res = await fetch(`${API_BASE}/api/bookings`);
+            if (!res.ok) throw new Error("Status " + res.status);
+            const all = await res.json();
+
+            // Filter to only bookings for this provider's services
+            allBookings = all.filter(b =>
+                b.service &&
+                b.service.provider &&
+                b.service.provider.id === currentUser.id
+            );
+
+            // Stats
+            document.getElementById("totalBookings").textContent = allBookings.length;
+            const uniqueServices = new Set(allBookings.map(b => b.service?.id)).size;
+            const uniqueCustomers = new Set(allBookings.map(b => b.customer?.id)).size;
+            document.getElementById("servicesBooked").textContent = uniqueServices;
+            document.getElementById("uniqueCustomers").textContent = uniqueCustomers;
+
+            // Populate service filter dropdown
+            const serviceFilter = document.getElementById("serviceFilter");
+            const serviceNames = [...new Map(allBookings.map(b => [b.service?.id, b.service?.title])).entries()];
+            serviceNames.forEach(([id, title]) => {
+                const opt = document.createElement("option");
+                opt.value = id;
+                opt.textContent = title || "Unknown";
+                serviceFilter.appendChild(opt);
+            });
+
+            renderBookings(allBookings);
+            status.textContent = `${allBookings.length} booking(s) loaded.`;
+        } catch(e) {
+            tbody.innerHTML = `<tr><td colspan="6" class="empty-state">Error: ${esc(e.message)}</td></tr>`;
+            status.textContent = "Error loading.";
+        }
+    }
+
+    function filterBookings() {
+        const search = document.getElementById("searchInput").value.toLowerCase();
+        const serviceId = document.getElementById("serviceFilter").value;
+        const filtered = allBookings.filter(b => {
+            const matchSearch = !search ||
+                (b.service?.title || "").toLowerCase().includes(search) ||
+                (b.customer?.name || "").toLowerCase().includes(search) ||
+                (b.customer?.email || "").toLowerCase().includes(search);
+            const matchService = !serviceId || String(b.service?.id) === serviceId;
+            return matchSearch && matchService;
+        });
+        renderBookings(filtered);
+    }
+
+    function renderBookings(bookings) {
+        const tbody = document.getElementById("bookingsTableBody");
+        if (!bookings.length) {
+            tbody.innerHTML = `<tr><td colspan="6" class="empty-state">No bookings found.</td></tr>`;
+            return;
+        }
+        tbody.innerHTML = bookings.map(b => `
+            <tr>
+                <td>#${b.id ?? ""}</td>
+                <td>${esc(b.service?.title || "N/A")}</td>
+                <td>${esc(b.customer?.name || "N/A")}</td>
+                <td>${esc(b.customer?.email || "N/A")}</td>
+                <td>${esc(b.date || "—")}</td>
+                <td>${esc(b.time || "—")}</td>
+            </tr>`).join("");
+    }
+
+    init();
+</script>
+</body>
+</html>
