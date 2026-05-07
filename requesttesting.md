@@ -36,12 +36,6 @@
 2. C1 writes a positive review for service S1.
 3. C1 exits.
 
-#### 5. Customer: US-CUST-005 — Read reviews & book
-1. Customer C2 logs in and creates profile.
-2. C2 browses services.
-3. C2 views reviews for S1.
-4. C2 books S1.
-5. C2 exits.
 
 ---
 

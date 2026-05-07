@@ -83,7 +83,8 @@ The project is divided into three main components:
 
 ---
 
-![System Diagram](https://github.com/user-attachments/assets/14f88ad3-bef3-436c-ab6f-8d9d3120c00a)
+![System Diagram](https://github.com/user-attachments/assets/277e5a0d-6527-4459-adfa-bd28c94d3338)
+
 
 ---
 
