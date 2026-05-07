@@ -35,7 +35,7 @@
 
         <div class="mb-3">
           <label class="form-label small opacity-75">Role</label>
-          <select id="role" class="form-select">
+          <select id="role" class="form-select" onchange="updateEmailHint()">
             <option value="CUSTOMER">Customer</option>
             <option value="PROVIDER">Provider</option>
             <option value="ADMIN">System Admin</option>
@@ -50,6 +50,9 @@
         <div class="mb-3">
           <label class="form-label small opacity-75">Email</label>
           <input id="email" class="form-control" placeholder="name@email.com">
+          <div id="emailHint" class="small mt-1" style="display:none; color:rgba(255,200,0,0.85);">
+            ⚠️ Provider and Admin accounts require an @autobid.com email address.
+          </div>
         </div>
 
         <div class="mb-3">
@@ -84,6 +87,19 @@
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 
+  function updateEmailHint() {
+    const role = document.getElementById("role").value;
+    const hint = document.getElementById("emailHint");
+    const emailInput = document.getElementById("email");
+    if (role === "PROVIDER" || role === "ADMIN") {
+      hint.style.display = "block";
+      emailInput.placeholder = "name@autobid.com";
+    } else {
+      hint.style.display = "none";
+      emailInput.placeholder = "name@email.com";
+    }
+  }
+
   async function signup() {
     const role = document.getElementById("role").value.toUpperCase();
     const name = document.getElementById("name").value.trim();
@@ -97,6 +113,12 @@
 
     if (!isValidEmail(email)) {
       showMsg("Invalid email format.", false);
+      return;
+    }
+
+    // Providers and admins must use @autobid.com
+    if ((role === "PROVIDER" || role === "ADMIN") && !email.endsWith("@autobid.com")) {
+      showMsg(" Provider and Admin accounts must use an @autobid.com email address.", false);
       return;
     }
 
