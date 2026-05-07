@@ -44,6 +44,8 @@
         .filters { display: flex; gap: 12px; flex-wrap: wrap; padding: 16px 22px; border-bottom: 1px solid rgba(255,255,255,0.08); }
         .filters input, .filters select { padding: 8px 14px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; color: #e8edf7; font-size: 14px; }
         .filters input::placeholder { color: #6a7d99; }
+        .btn-delete { border: none; border-radius: 10px; padding: 8px 14px; cursor: pointer; color: white; font-weight: 600; font-size: 13px; background: #c84d59; }
+        .btn-delete:hover { background: #a83848; }
         @media (max-width: 900px) { .cards { grid-template-columns: 1fr 1fr; } .layout { flex-direction: column; } .sidebar { width: 100%; } }
     </style>
 </head>
@@ -115,6 +117,7 @@
                             <th>Customer Email</th>
                             <th>Date</th>
                             <th>Time</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="bookingsTableBody"></tbody>
@@ -158,22 +161,18 @@
             if (!res.ok) throw new Error("Status " + res.status);
             const all = await res.json();
 
-            // Filter to only bookings for this provider's services
             allBookings = all.filter(b =>
                 b.service &&
                 b.service.provider &&
                 b.service.provider.id === currentUser.id
             );
 
-            // Stats
-            document.getElementById("totalBookings").textContent = allBookings.length;
-            const uniqueServices = new Set(allBookings.map(b => b.service?.id)).size;
-            const uniqueCustomers = new Set(allBookings.map(b => b.customer?.id)).size;
-            document.getElementById("servicesBooked").textContent = uniqueServices;
-            document.getElementById("uniqueCustomers").textContent = uniqueCustomers;
+            updateStats();
 
             // Populate service filter dropdown
             const serviceFilter = document.getElementById("serviceFilter");
+            // Clear existing options except first
+            while (serviceFilter.options.length > 1) serviceFilter.remove(1);
             const serviceNames = [...new Map(allBookings.map(b => [b.service?.id, b.service?.title])).entries()];
             serviceNames.forEach(([id, title]) => {
                 const opt = document.createElement("option");
@@ -185,9 +184,15 @@
             renderBookings(allBookings);
             status.textContent = `${allBookings.length} booking(s) loaded.`;
         } catch(e) {
-            tbody.innerHTML = `<tr><td colspan="6" class="empty-state">Error: ${esc(e.message)}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7" class="empty-state">Error: ${esc(e.message)}</td></tr>`;
             status.textContent = "Error loading.";
         }
+    }
+
+    function updateStats() {
+        document.getElementById("totalBookings").textContent = allBookings.length;
+        document.getElementById("servicesBooked").textContent = new Set(allBookings.map(b => b.service?.id)).size;
+        document.getElementById("uniqueCustomers").textContent = new Set(allBookings.map(b => b.customer?.id)).size;
     }
 
     function filterBookings() {
@@ -207,7 +212,7 @@
     function renderBookings(bookings) {
         const tbody = document.getElementById("bookingsTableBody");
         if (!bookings.length) {
-            tbody.innerHTML = `<tr><td colspan="6" class="empty-state">No bookings found.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7" class="empty-state">No bookings found.</td></tr>`;
             return;
         }
         tbody.innerHTML = bookings.map(b => `
@@ -218,7 +223,22 @@
                 <td>${esc(b.customer?.email || "N/A")}</td>
                 <td>${esc(b.date || "—")}</td>
                 <td>${esc(b.time || "—")}</td>
+                <td><button class="btn-delete" onclick="deleteBooking(${b.id})">Cancel</button></td>
             </tr>`).join("");
+    }
+
+    async function deleteBooking(id) {
+        if (!confirm("Cancel booking #" + id + "?")) return;
+        try {
+            const res = await fetch(`${API_BASE}/api/bookings/${id}`, { method: "DELETE" });
+            if (!res.ok) throw new Error(await res.text());
+            // Remove from local array and re-render without a full reload
+            allBookings = allBookings.filter(b => b.id !== id);
+            updateStats();
+            filterBookings();
+        } catch(e) {
+            alert("Error: " + e.message);
+        }
     }
 
     init();
