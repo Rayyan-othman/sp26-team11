@@ -33,7 +33,7 @@ The system improves convenience by eliminating the need for customers to visit p
 
 The project consists of three major components:
 
-## Backend API (`/backendapi`)
+## Backend API 
 - Built with Spring Boot
 - Handles REST API endpoints
 - Manages business logic and database operations
