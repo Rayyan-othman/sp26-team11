@@ -37,26 +37,42 @@
 3. C1 exits.
 
 
+
+
 ---
+#### 6. Provider: US-PROV-001 — Create and manage provider profile & services
+1. Provider P1 logs in with their @autobid.com account.
+2. P1 navigates to the Profile page and updates their name and email.
+3. P1 navigates to the Dashboard and creates service S1 (Mobile Oil Change with price, description, category, and booking deadline).
+4. P1 edits S1 to update the price.
+5. P1 exits.
 
-#### 6. Provider: US-PROV-001 — Create provider profile & service
-1. Provider P1 logs in and creates a profile.
-2. P1 creates service S1 (Mobile Oil Change with price and description).
-3. P1 exits.
-
-#### 7. Provider: US-PROV-002 — View statistics & reply to review
+#### 7. Provider: US-PROV-002 — View customer statistics
 1. P1 logs in.
-2. P1 views provider statistics (bookings, reviews).
-3. P1 reads review for S1.
-4. P1 replies to the review.
+2. P1 views the Dashboard stats (total services, total reviews, average rating).
+3. P1 navigates to the Bookings page and views all customer bookings for their services (total bookings, unique customers, services booked).
+4. P1 cancels a booking.
+5. P1 exits.
+
+#### 8. Provider: US-PROV-003 — Reply to customer reviews
+1. P1 logs in.
+2. P1 scrolls to the Customer Reviews section on the Dashboard.
+3. P1 reads a review left by a customer for S1.
+4. P1 writes and submits a reply to the review.
+5. P1 exits.
+
+#### 9. Provider: US-PROV-004 — Delete a service
+1. P1 logs in.
+2. P1 navigates to the My Services section on the Dashboard.
+3. P1 locates S1 and clicks Delete.
+4. P1 confirms the deletion.
 5. P1 exits.
 
 ---
 
-#### 8. Admin: US-ADMIN-001 — Manage users and content
+#### 10. Admin: US-ADMIN-001 — Manage users and content
 1. Admin logs in.
 2. Admin views all users.
-3. Admin bans a user.
 4. Admin deletes a service or review.
 5. Admin views system statistics.
 6. Admin exits.

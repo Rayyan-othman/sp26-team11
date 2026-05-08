@@ -1,7 +1,7 @@
 # AutoBid – MVC Application
 
-A Spring MVC web application connecting customers with mobile mechanics and detailers
-for on-site automotive services booked directly to their location.
+A Spring MVC web application used to connect customers with mechanics and detailers
+for on-site services.
 
 ---
 
