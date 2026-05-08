@@ -22,6 +22,12 @@ AutoBid is a web-based platform that allows customers to book mobile automotive 
 The system improves convenience by eliminating the need for customers to visit physical service locations and provides providers with a streamlined platform for managing appointments and customer feedback.
 
 ---
+# UML diagram
+
+![UML diagram](https://github.com/user-attachments/assets/277e5a0d-6527-4459-adfa-bd28c94d3338)
+
+
+---
 
 # System Architecture
 
