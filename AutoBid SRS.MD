@@ -160,22 +160,8 @@ Each story follows the format: **As a `<role>`, I want `<capability>`, so that `
 
 ---
 
-- **US-PROV-003 — Manage Availability Schedule**
 
-  *Story:* As a provider, I want to update my availability schedule so that customers can only book appointments during my available time slots.
-
-  *Acceptance:*
-```gherkin
-  Scenario: Update availability schedule
-    Given I have an active provider account
-    When I update my available time slots
-    Then customers see the updated availability
-    And unavailable time slots cannot be selected for booking
-```
-
----
-
-- **US-PROV-004 — View Booking Statistics**
+- **US-PROV-003 — View Booking Statistics**
 
   *Story:* As a provider, I want to view my booking history and customer ratings so that I can monitor my performance and service quality.
 
@@ -190,7 +176,7 @@ Each story follows the format: **As a `<role>`, I want `<capability>`, so that `
 
 ---
 
-- **US-PROV-005 — Reply to Reviews**
+- **US-PROV-004 — Reply to Reviews**
 
   *Story:* As a provider, I want to respond to customer reviews so that I can address feedback professionally.
 
