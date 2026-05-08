@@ -49,60 +49,39 @@ The project consists of three major components:
 
 ---
 
-# User Roles & Functional Requirements
+# App Functions
 
-## Customer Features (Gamal Hassan)
+1. Customer:
 
-### US-CUST-001 — Register & Manage Profile
-- Create customer account
-- Login securely
-- Edit personal profile information
+   i. Create/modify customer profile – Register as a customer.  
+   
+   ii. View available services – Browse provider services and pricing.  
+   
+   iii. Book available services – Schedule appointments with providers.  
+   
+   iv. Write reviews for completed services – Review service quality and experience.  
 
-### US-CUST-002 — View Available Services
-- Browse provider services
-- View pricing and descriptions
+2. Provider:
 
-### US-CUST-003 — Book a Service
-- Select service and provider
-- Choose appointment date
-- Confirm booking
+   i. Create/modify/remove provider profile – Register as a provider.  
+   
+   ii. Create services – Post services with pricing, categories, and descriptions.  
+   
+   iii. View customer statistics – Track bookings and customer activity.  
+   
+   iv. Reply to reviews – Respond to customer feedback.  
+   
+   v. Delete services – Remove services from dashboard.  
 
-### US-CUST-004 — Write a Review
-- Submit ratings and comments after service completion
+3. SysAdmin:
 
----
-
-## Provider Features (Gopal Vulli)
-
-### US-PROV-001 — Manage Provider Profile & Services
-- Create and update provider profile
-- Provider accounts require `@autobid.com` email
-- Create services with pricing, category, and descriptions
-- Edit and delete services
-
-### US-PROV-002 — View Customer Statistics
-- View total bookings
-- View unique customers
-- View services booked
-- Cancel bookings
-
-### US-PROV-003 — Reply to Customer Reviews
-- View customer reviews
-- Submit replies to reviews
-
-### US-PROV-004 — Delete Services
-- Remove services from dashboard
-
----
-
-## System Admin Features (Rayyan Othman)
-
-### US-ADMIN-001 — Manage Platform
-- View all users
-- Restrict or remove user access
-- Moderate services
-- Moderate reviews
-- View platform statistics
+   i. Manage user access – Restrict or remove users.  
+   
+   ii. Moderate services – Review and manage service listings.  
+   
+   iii. Moderate reviews – Flag or remove inappropriate reviews.  
+   
+   iv. View usage statistics – Track platform activity and bookings.  
 
 ---
 
@@ -174,95 +153,9 @@ The project consists of three major components:
 | GET | `/statistics` |
 | GET | `/statistics/provider/{providerId}` |
 
----
-
-# Test Scenarios
-
-## Customer Test Scenarios
-
-### US-CUST-001 — Register & Manage Profile
-1. Customer logs in and creates a profile
-2. Customer edits profile information
-3. Customer exits
-
-### US-CUST-002 — View Available Services
-1. Customer logs in
-2. Customer views available services
-3. Customer exits
-
-### US-CUST-003 — Book a Service
-1. Customer selects service
-2. Customer books appointment
-3. Booking confirmation displayed
-
-### US-CUST-004 — Write a Review
-1. Customer logs in after service completion
-2. Customer submits review and rating
 
 ---
 
-## Provider Test Scenarios
-
-### US-PROV-001 — Manage Provider Profile & Services
-1. Provider logs in with `@autobid.com`
-2. Provider updates profile
-3. Provider creates service
-4. Provider edits service details
-
-### US-PROV-002 — View Customer Statistics
-1. Provider views dashboard statistics
-2. Provider views bookings
-3. Provider cancels booking
-
-### US-PROV-003 — Reply to Reviews
-1. Provider views customer review
-2. Provider submits reply
-
-### US-PROV-004 — Delete Services
-1. Provider selects service
-2. Provider deletes service
-
----
-
-## Admin Test Scenarios
-
-### US-ADMIN-001 — Manage Users & Content
-1. Admin logs in
-2. Admin views users
-3. Admin deletes services or reviews
-4. Admin views statistics
-
----
-
-# Non-Functional Requirements
-
-## Performance Requirements
-
-### Scenario P1 — Browse Services Performance
-- Expected: 95% of requests complete within 1.5 seconds
-
-### Scenario P2 — Booking Performance
-- Expected: 99% of booking requests complete within 1 second
-
----
-
-## Security Requirements
-
-### Scenario S1 — Role-Based Access Control
-- Customers cannot access provider/admin endpoints
-- Unauthorized requests return `403 Forbidden`
-
----
-
-## Usability Requirements
-
-### Scenario U1 — Customer Booking Flow
-- Booking process completed within 3 minutes
-
-### Scenario U2 — Provider Service Creation
-- Service creation completed within 5 minutes
-
----
 
 # Demo Flow
 
