@@ -1,114 +1,133 @@
-# sp26-team11
+# AutoBid
+
 Team 11 group project for CSC 340 (2026)
+
+## Team Members
 - Rayyan Othman
 - Gopal Vulli
 - Gamal Hassan
 
 ---
 
-## Title
-> AutoBid
+# Project Information
 
----
-
-## Team Members
-> Rayyan Othman  
-> Gopal Vulli  
-> Gamal Hassan
-
----
+**Project Name:** AutoBid  
+**Version:** 1.0  
+**Date:** 2026-05-04  
 
 ## Description
 
-Our project is a system that allows customers to book mobile, on-site mechanic and detailing services directly to their location with ease and convenience. Customers can view a list of providers and the services they offer, book appointments, and leave reviews based on their experience. Providers can create profiles, list their qualifications, post services, and receive reviews and feedback from customers. This helps providers gain visibility and attract more jobs.
+AutoBid is a web-based platform that allows customers to book mobile automotive services directly to their location. The platform connects customers with mobile mechanics and detailing providers while giving providers tools to manage services, bookings, reviews, and customer interactions.
 
-This application solves the problem of customers being too busy to visit service locations by making automotive services more convenient, automated, and accessible.
+The system improves convenience by eliminating the need for customers to visit physical service locations and provides providers with a streamlined platform for managing appointments and customer feedback.
 
 ---
 
-## System Architecture
+# System Architecture
 
-The project is divided into three main components:
+The project consists of three major components:
 
-### Backend API (`/backendapi`)
-- Built using Spring Boot
-- Handles business logic and database operations
-- Provides REST endpoints for users, services, bookings, reviews, and admin actions
+## Backend API (`/backendapi`)
+- Built with Spring Boot
+- Handles REST API endpoints
+- Manages business logic and database operations
 
-### MVC Application (`/mvc-app`)
-- Handles frontend rendering
-- Connects UI to backend API
-- Displays dynamic data from the database
+## MVC Application (`/mvc-app`)
+- Frontend web application
+- Handles user interface rendering
+- Connects to backend API through HTTP requests
 
-### Database
+## Database
 - PostgreSQL (Neon)
-- Stores users, services, bookings, and reviews
+- Stores users, services, bookings, reviews, and statistics
 
 ---
 
-## App Functions
+# User Roles & Functional Requirements
 
-### 1. Customer (Gamal Hassan)
-1. **Create/modify customer profile** – Customers can register, log in securely, and update personal information.
-2. **View available services** – Customers can browse providers, pricing, and service descriptions.
-3. **Book services** – Customers can select a provider, choose a time, and confirm booking.
-4. **Write reviews** – Customers can leave ratings and feedback after a completed service.
+## Customer Features (Gamal Hassan)
 
----
+### US-CUST-001 — Register & Manage Profile
+- Create customer account
+- Login securely
+- Edit personal profile information
 
-### 2. Provider (Gopal Vulli)
-1. **Create/modify provider profile** – Providers can manage their account information.
-2. **Create and delete services** – Providers can post and manage services with pricing and descriptions.
-3. **View provider dashboard** – Displays services, total reviews, and average ratings.
-4. **View customer statistics** – Providers can track performance metrics.
-5. **Reply to reviews** – Providers can respond to customer feedback.
+### US-CUST-002 — View Available Services
+- Browse provider services
+- View pricing and descriptions
 
----
+### US-CUST-003 — Book a Service
+- Select service and provider
+- Choose appointment date
+- Confirm booking
 
-### 3. SysAdmin (Rayyan Othman)
-1. **Manage users** – Admin can view users and remove or restrict access when necessary.
-2. **Moderate services** – Admin can add, remove, or update services on the platform.
-3. **Moderate reviews** – Admin can remove inappropriate reviews.
-4. **View usage statistics** – Admin can view platform data and statistics.
+### US-CUST-004 — Write a Review
+- Submit ratings and comments after service completion
 
 ---
 
-### SysAdmin Use Cases
-| Use Case | Endpoint |
-|---|---|
-| Manage users | `GET /users`, `PUT /users/{id}` |
-| Moderate services | `GET /services`, `DELETE /services/{id}` |
-| Moderate reviews | `GET /reviews`, `DELETE /reviews/{id}` |
-| View usage statistics | `GET /statistics` |
+## Provider Features (Gopal Vulli)
+
+### US-PROV-001 — Manage Provider Profile & Services
+- Create and update provider profile
+- Provider accounts require `@autobid.com` email
+- Create services with pricing, category, and descriptions
+- Edit and delete services
+
+### US-PROV-002 — View Customer Statistics
+- View total bookings
+- View unique customers
+- View services booked
+- Cancel bookings
+
+### US-PROV-003 — Reply to Customer Reviews
+- View customer reviews
+- Submit replies to reviews
+
+### US-PROV-004 — Delete Services
+- Remove services from dashboard
 
 ---
 
-![System Diagram](https://github.com/user-attachments/assets/277e5a0d-6527-4459-adfa-bd28c94d3338)
+## System Admin Features (Rayyan Othman)
 
+### US-ADMIN-001 — Manage Platform
+- View all users
+- Restrict or remove user access
+- Moderate services
+- Moderate reviews
+- View platform statistics
 
 ---
 
-## API Endpoints
+# API Endpoints
 
-### User Endpoints
+## User Endpoints
+
 | Method | Endpoint | Description |
 |---|---|---|
 | GET | `/users` | Get all users |
 | GET | `/users/{id}` | Get user by ID |
-| POST | `/users` | Create a new user |
-| PUT | `/users/{id}` | Update an existing user |
-| DELETE | `/users/{id}` | Delete a user |
+| POST | `/users` | Create user |
+| PUT | `/users/{id}` | Update user |
+| DELETE | `/users/{id}` | Delete user |
 
-### Service Endpoints
+---
+
+## Service Endpoints
+
 | Method | Endpoint | Description |
 |---|---|---|
 | GET | `/services` | Get all services |
 | GET | `/services/{id}` | Get service by ID |
-| POST | `/services` | Create a new service |
-| PUT | `/services/{id}` | Update an existing service |
-| DELETE | `/services/{id}` | Delete a service |
+| POST | `/services` | Create service |
+| PUT | `/services/{id}` | Update service |
+| DELETE | `/services/{id}` | Delete service |
 
-### Booking Endpoints
+---
+
+## Booking Endpoints
+
 | Method | Endpoint |
 |---|---|
 | GET | `/bookings` |
@@ -117,7 +136,10 @@ The project is divided into three main components:
 | PUT | `/bookings/{id}` |
 | DELETE | `/bookings/{id}` |
 
-### Review Endpoints
+---
+
+## Review Endpoints
+
 | Method | Endpoint |
 |---|---|
 | GET | `/reviews` |
@@ -127,14 +149,20 @@ The project is divided into three main components:
 | PUT | `/reviews/{id}` |
 | DELETE | `/reviews/{id}` |
 
-### Reply Endpoints
+---
+
+## Reply Endpoints
+
 | Method | Endpoint |
 |---|---|
 | GET | `/replies` |
 | GET | `/replies/{id}` |
 | POST | `/replies` |
 
-### Statistics Endpoints
+---
+
+## Statistics Endpoints
+
 | Method | Endpoint |
 |---|---|
 | GET | `/statistics` |
@@ -142,262 +170,135 @@ The project is divided into three main components:
 
 ---
 
-## Use Case Mapping with Example Requests & Responses
+# Test Scenarios
 
-### Customer Use Cases (Gamal Hassan)
+## Customer Test Scenarios
 
-#### Create Customer Profile
-**Endpoint:** `POST /users`
+### US-CUST-001 — Register & Manage Profile
+1. Customer logs in and creates a profile
+2. Customer edits profile information
+3. Customer exits
 
-**Request:**
-```json
-{
-  "firstName": "Rayyan",
-  "lastName": "Othman",
-  "email": "rayyan@email.com",
-  "password": "123456",
-  "phone": "3369781184",
-  "role": "CUSTOMER",
-  "accountStatus": "ACTIVE"
-}
-```
+### US-CUST-002 — View Available Services
+1. Customer logs in
+2. Customer views available services
+3. Customer exits
 
-**Response:**
-```json
-{
-  "id": 1,
-  "firstName": "Rayyan",
-  "lastName": "Othman",
-  "email": "rayyan@email.com",
-  "phone": "3369781184",
-  "role": "CUSTOMER",
-  "accountStatus": "ACTIVE"
-}
-```
+### US-CUST-003 — Book a Service
+1. Customer selects service
+2. Customer books appointment
+3. Booking confirmation displayed
+
+### US-CUST-004 — Write a Review
+1. Customer logs in after service completion
+2. Customer submits review and rating
 
 ---
 
-#### View Available Services
-**Endpoint:** `GET /services`
+## Provider Test Scenarios
 
-**Response:**
-```json
-[
-  {
-    "id": 1,
-    "title": "Mobile Oil Change",
-    "description": "On-site oil change service",
-    "price": 89.99,
-    "category": "Mechanic",
-    "availability": "Available"
-  }
-]
-```
+### US-PROV-001 — Manage Provider Profile & Services
+1. Provider logs in with `@autobid.com`
+2. Provider updates profile
+3. Provider creates service
+4. Provider edits service details
 
----
+### US-PROV-002 — View Customer Statistics
+1. Provider views dashboard statistics
+2. Provider views bookings
+3. Provider cancels booking
 
-#### Book Service
-**Endpoint:** `POST /bookings`
+### US-PROV-003 — Reply to Reviews
+1. Provider views customer review
+2. Provider submits reply
 
-**Request:**
-```json
-{
-  "bookingDate": "2026-03-24",
-  "status": "CONFIRMED",
-  "customer": { "id": 1 },
-  "service": { "id": 1 }
-}
-```
-
-**Response:**
-```json
-{
-  "id": 1,
-  "bookingDate": "2026-03-24",
-  "status": "CONFIRMED"
-}
-```
+### US-PROV-004 — Delete Services
+1. Provider selects service
+2. Provider deletes service
 
 ---
 
-#### Write Review
-**Endpoint:** `POST /reviews`
+## Admin Test Scenarios
 
-**Request:**
-```json
-{
-  "rating": 5,
-  "comment": "Excellent and fast service.",
-  "customer": { "id": 1 },
-  "service": { "id": 1 }
-}
-```
-
-**Response:**
-```json
-{
-  "id": 1,
-  "rating": 5,
-  "comment": "Excellent and fast service."
-}
-```
+### US-ADMIN-001 — Manage Users & Content
+1. Admin logs in
+2. Admin views users
+3. Admin deletes services or reviews
+4. Admin views statistics
 
 ---
 
-### Provider Use Cases (Gopal Vulli)
+# Non-Functional Requirements
 
-#### Create Provider Profile
-**Endpoint:** `POST /users`
+## Performance Requirements
 
-**Request:**
-```json
-{
-  "firstName": "John",
-  "lastName": "Mechanic",
-  "email": "john@autobid.com",
-  "password": "123456",
-  "phone": "3361112222",
-  "role": "PROVIDER",
-  "accountStatus": "ACTIVE"
-}
-```
+### Scenario P1 — Browse Services Performance
+- Expected: 95% of requests complete within 1.5 seconds
 
-**Response:**
-```json
-{
-  "id": 2,
-  "firstName": "John",
-  "lastName": "Mechanic",
-  "email": "john@autobid.com",
-  "phone": "3361112222",
-  "role": "PROVIDER",
-  "accountStatus": "ACTIVE"
-}
-```
+### Scenario P2 — Booking Performance
+- Expected: 99% of booking requests complete within 1 second
 
 ---
 
-#### Create Service
-**Endpoint:** `POST /services`
+## Security Requirements
 
-```json
-{
-  "title": "Mobile Oil Change",
-  "description": "On-site oil change service",
-  "price": 89.99,
-  "category": "Mechanic",
-  "availability": "Available",
-  "provider": { "id": 2 }
-}
-```
+### Scenario S1 — Role-Based Access Control
+- Customers cannot access provider/admin endpoints
+- Unauthorized requests return `403 Forbidden`
 
 ---
 
-#### View Provider Dashboard
-Displays:
-- Total services
-- Total reviews
-- Average rating
+## Usability Requirements
 
-Data retrieved from:
-- `GET /services`
-- `GET /reviews`
+### Scenario U1 — Customer Booking Flow
+- Booking process completed within 3 minutes
+
+### Scenario U2 — Provider Service Creation
+- Service creation completed within 5 minutes
 
 ---
 
-#### Reply to Review
-**Endpoint:** `POST /replies`
+# Demo Flow
 
-```json
-{
-  "message": "Thank you for your feedback.",
-  "review": { "id": 1 },
-  "provider": { "id": 2 }
-}
-```
-
----
-
-#### Delete Service
-**Endpoint:** `DELETE /services/{id}`
-
-#### Update Provider Profile
-**Endpoint:** `PUT /users/{id}`
+1. Login as Provider
+2. Create service
+3. View provider dashboard
+4. Customer books service
+5. Customer leaves review
+6. Provider replies to review
+7. Provider views booking statistics
+8. Admin moderates content
 
 ---
 
-### SysAdmin Use Cases (Rayyan Othman)
+# Running the Project
 
-#### Manage Users
-**Endpoint:** `GET /users`
+## Run MVC Application
 
----
-
-#### Restrict/Remove User Access
-**Endpoint:** `PUT /users/{id}`
-
-**Request:**
-```json
-{
-  "accountStatus": "BANNED"
-}
-```
-
-**Response:**
-```json
-{
-  "id": 1,
-  "accountStatus": "BANNED"
-}
-```
-
----
-
-#### Moderate Services
-**Endpoint:** `DELETE /services/1`
-
----
-
-#### Moderate Reviews
-**Endpoint:** `DELETE /reviews/1`
-
----
-
-#### View Platform Statistics
-**Endpoint:** `GET /statistics`
-
----
-
-## How to Run
-
-
-
-### Run MVC App
 ```bash
 cd mvc-app
 mvn spring-boot:run
 ```
 
-### Open in Browser
-```
+## Open Application
+
+```text
 http://localhost:8080
 ```
 
 ---
 
-## Demo Flow (Presentation)
-1. Login as Provider
-2. Create a service
-3. View service in dashboard
-4. Customer books and leaves review
-5. Provider views review
-6. Provider replies to review
-7. Dashboard updates (statistics and reviews)
+# Technologies Used
+- Java
+- Spring Boot
+- PostgreSQL
+- HTML/CSS/JavaScript
+- Maven
 
 ---
 
-## Notes
-- Data is stored persistently using PostgreSQL
-- Backend built with Spring Boot REST API
-- Frontend communicates via HTTP requests
+# Notes
+- Data stored using PostgreSQL
+- Backend built with Spring Boot REST APIs
+- Frontend communicates using HTTP requests
 - Supports Customer, Provider, and Admin roles
